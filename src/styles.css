@@ -1,0 +1,126 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system DX Vendas — Delifrios
+ * Fundo neutro #F7F6F2, cartões brancos, bordas #E7E4DC, radius 12px.
+ * Amarelo #FFC609 apenas acentos, vermelho #E23430 ações primárias,
+ * grafite #262320 sidebar.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-red: var(--brand-red);
+  --color-brand-red-hover: var(--brand-red-hover);
+  --color-graphite: var(--graphite);
+  --color-positive: var(--positive);
+  --color-positive-text: var(--positive-text);
+  --color-warning: var(--warning);
+  --color-severe: var(--severe);
+  --color-critical: var(--critical);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --font-display: "Nunito", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-logo: "Quicksand", system-ui, sans-serif;
+  --font-script: "Caveat", cursive;
+}
+
+:root {
+  --radius: 12px;
+  --background: #f7f6f2;
+  --foreground: #262320;
+  --card: #ffffff;
+  --card-foreground: #262320;
+  --popover: #ffffff;
+  --popover-foreground: #262320;
+  --primary: #e23430;
+  --primary-foreground: #ffffff;
+  --secondary: #efece4;
+  --secondary-foreground: #262320;
+  --muted: #f1efe9;
+  --muted-foreground: #7a746b;
+  --accent: #fff6d6;
+  --accent-foreground: #262320;
+  --destructive: #d03b3b;
+  --destructive-foreground: #ffffff;
+  --border: #e7e4dc;
+  --input: #e7e4dc;
+  --ring: #ffc609;
+
+  --brand-yellow: #ffc609;
+  --brand-red: #e23430;
+  --brand-red-hover: #c22823;
+  --graphite: #262320;
+
+  --positive: #0ca30c;
+  --positive-text: #006300;
+  --warning: #fab219;
+  --severe: #ec835a;
+  --critical: #d03b3b;
+
+  --sidebar: #262320;
+  --sidebar-foreground: #e9e6df;
+  --sidebar-accent: rgba(255, 198, 9, 0.16);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 800;
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility card-surface {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(38, 35, 32, 0.05);
+}
