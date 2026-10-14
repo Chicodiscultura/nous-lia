@@ -222,7 +222,7 @@ function Inicio() {
                     ? "var(--positive-text)"
                     : eficiencia.valor >= g.meta_eficiencia_pct - 10
                       ? "var(--warning)"
-                      : "var(--severe)"
+                      : "var(--critical)"
               }
               linhas={[
                 `Girando ${brl(eficiencia.produtivo)}`,

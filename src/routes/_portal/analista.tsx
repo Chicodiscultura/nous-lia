@@ -156,12 +156,11 @@ function AnalistaPage() {
           <div
             className="flex items-start gap-3 rounded-md px-4 py-3 text-sm"
             style={{
-              backgroundColor: "color-mix(in srgb, var(--brand-yellow) 16%, #fff)",
-              borderLeft: "3px solid var(--brand-yellow)",
+              backgroundColor: "var(--attention-tint)",
             }}
             role="note"
           >
-            <ShieldCheck className="mt-0.5 size-5 shrink-0" style={{ color: "var(--brand-red)" }} />
+            <ShieldCheck className="mt-0.5 size-5 shrink-0" style={{ color: "var(--attention)" }} />
             <p>
               <strong>Aguardando aprovação.</strong> Nenhum pedido é enviado ao portal do fabricante
               sem o aval de uma pessoa: o analista sugere, a decisão é humana.
@@ -177,7 +176,7 @@ function AnalistaPage() {
                   className="min-h-[44px] rounded-md border px-4 text-sm font-semibold"
                   style={
                     a.codfornec === codfornec
-                      ? { backgroundColor: "var(--brand-yellow)", color: "var(--graphite)" }
+                      ? { backgroundColor: "var(--ink)", color: "var(--on-ink)" }
                       : undefined
                   }
                 >

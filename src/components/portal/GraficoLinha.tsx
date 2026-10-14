@@ -20,7 +20,7 @@ const compacto = (v: number) =>
 export function GraficoLinha({
   dados,
   altura = 300,
-  cor = "#D94436",
+  cor = "#0E1311",
   segundaSerie,
 }: {
   dados: { data: string; valor: number; comparativo?: number }[];
@@ -36,7 +36,7 @@ export function GraficoLinha({
         data={dados}
         margin={{ top: 8, right: 8, bottom: pequena ? 16 : 4, left: 0 }}
       >
-        <CartesianGrid vertical={false} stroke="#E7E4DC" />
+        <CartesianGrid vertical={false} stroke="#C9CEC8" />
         <XAxis
           dataKey="data"
           tickFormatter={ddmm}
@@ -47,14 +47,14 @@ export function GraficoLinha({
           angle={pequena ? -45 : 0}
           textAnchor={pequena ? "end" : "middle"}
           height={pequena ? 40 : 30}
-          tick={{ fill: "#7A746B", fontSize: pequena ? 10 : 12 }}
+          tick={{ fill: "#55605A", fontSize: pequena ? 10 : 12 }}
         />
         <YAxis
           tickFormatter={(v: number) => (pequena ? compacto(v) : brl(v))}
           tickLine={false}
           axisLine={false}
           width={pequena ? 44 : 90}
-          tick={{ fill: "#7A746B", fontSize: pequena ? 10 : 12 }}
+          tick={{ fill: "#55605A", fontSize: pequena ? 10 : 12 }}
         />
         <Tooltip
           labelFormatter={(l: string) => ddmm(l)}

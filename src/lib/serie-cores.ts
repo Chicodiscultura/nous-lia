@@ -1,14 +1,14 @@
 // Ordem fixa das séries: a cor segue a entidade, nunca o ranking.
 export const CORES_SERIE = [
-  "#D94436",
-  "#2A78D6",
-  "#EDA100",
-  "#1BAF7A",
-  "#4A3AA7",
-  "#E87BA4",
+  "#0E1311",
+  "#2F6F9F",
+  "#B0741A",
+  "#6B7A72",
+  "#A8503F",
+  "#7D8CA0",
 ] as const;
 
-export const COR_OUTROS = "#B9B4A9";
+export const COR_OUTROS = "#C9CEC8";
 
 /**
  * Recebe a lista canônica de entidades (ordem estável) e devolve o mapa

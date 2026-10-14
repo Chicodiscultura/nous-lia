@@ -37,7 +37,7 @@ export function KpiCard({
     <div
       className="card-surface p-3 sm:p-4"
       style={
-        destaque ? { borderTop: "3px solid var(--brand-yellow)" } : undefined
+        destaque ? { borderTop: "2px solid var(--ink)" } : undefined
       }
     >
       <div className="flex items-start justify-between gap-2">

@@ -50,7 +50,7 @@ export function GraficoBarras({
         margin={{ top: 4, right: pequena ? 8 : 72, bottom: 4, left: 0 }}
         barCategoryGap={12}
       >
-        <CartesianGrid horizontal={false} stroke="#E7E4DC" />
+        <CartesianGrid horizontal={false} stroke="#C9CEC8" />
         <XAxis type="number" hide />
         <YAxis
           type="category"
@@ -58,7 +58,7 @@ export function GraficoBarras({
           width={pequena ? 88 : 130}
           tickLine={false}
           axisLine={false}
-          tick={{ fill: "#7A746B", fontSize: pequena ? 10 : 12 }}
+          tick={{ fill: "#55605A", fontSize: pequena ? 10 : 12 }}
         />
         <Bar dataKey="valor" radius={[4, 4, 4, 4]} barSize={14}>
           {itens.map((d) => (
@@ -74,7 +74,7 @@ export function GraficoBarras({
             position={pequena ? "insideRight" : "right"}
             formatter={(v: number) => brl(v)}
             style={{
-              fill: pequena ? "#FFFFFF" : "#262320",
+              fill: pequena ? "#FFFFFF" : "#0E1311",
               fontSize: pequena ? 10 : 12,
               fontVariantNumeric: "tabular-nums",
             }}

@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { Bot, Boxes, Home, Milk, ShoppingCart, Thermometer, LogOut, Menu, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
-import { Logo } from "./Logo";
+import { Logo, Simbolo } from "./Logo";
 import { supabase } from "@/lib/supabase";
 import { useMinhasAbas } from "@/lib/abas";
 
@@ -38,11 +38,10 @@ function Navegacao({
             to={to}
             title={rotulo}
             onClick={onNavegar}
-            className="flex min-h-[44px] items-center gap-3 rounded-md border-l-[3px] px-3 py-2.5 text-sm transition-colors"
+            className="flex min-h-[44px] items-center gap-3 rounded-sm px-3 py-2.5 text-sm transition-colors"
             style={{
-              borderLeftColor: ativo ? "var(--brand-yellow)" : "transparent",
               backgroundColor: ativo ? "var(--sidebar-accent)" : "transparent",
-              color: ativo ? "var(--brand-yellow)" : "var(--sidebar-foreground)",
+              color: ativo ? "var(--on-ink)" : "var(--sidebar-foreground)",
             }}
           >
             <Icone className="size-4 shrink-0" />
@@ -101,7 +100,7 @@ export function Sidebar() {
         >
           <Menu className="size-5" />
         </button>
-        <Logo />
+        <Logo escuro />
       </div>
 
       {/* Drawer mobile */}
@@ -117,7 +116,7 @@ export function Sidebar() {
             style={fundo}
           >
             <div className="flex items-center justify-between px-4 py-4">
-              <Logo />
+              <Logo escuro />
               <button
                 onClick={() => setAberto(false)}
                 aria-label="Fechar menu"
@@ -144,20 +143,10 @@ export function Sidebar() {
         style={fundo}
       >
         <div className="hidden px-4 py-5 xl:block">
-          <Logo />
+          <Logo escuro />
         </div>
         <div className="flex justify-center py-5 xl:hidden">
-          <span
-            className="rounded-lg px-2 py-1 text-sm"
-            style={{
-              backgroundColor: "var(--brand-yellow)",
-              color: "var(--graphite)",
-              fontFamily: "var(--font-logo)",
-              fontWeight: 800,
-            }}
-          >
-            L
-          </span>
+          <Simbolo tamanho={32} escuro />
         </div>
         <Navegacao pathname={pathname} compacto visiveis={visiveis} />
         <Sair compacto />

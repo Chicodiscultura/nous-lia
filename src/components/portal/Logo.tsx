@@ -1,34 +1,48 @@
-/** Marca: NOUS (empresa) + LIA (produto, "Lucro com IA"). */
-export function Logo({ selo = true }: { selo?: boolean }) {
+/** Símbolo: célula de livro-razão 2×2 com uma casa conferida (Design System NOUS). */
+export function Simbolo({ tamanho = 36, escuro = false }: { tamanho?: number; escuro?: boolean }) {
+  const traco = escuro ? "#f3f4f1" : "#0e1311";
+  const casa = escuro ? "#5fd0a0" : "#1b6b4a";
   return (
-    <div className="flex flex-col gap-1">
-      <div className="flex items-center gap-2">
+    <svg width={tamanho} height={tamanho} viewBox="0 0 44 44" aria-hidden="true">
+      <rect x="2" y="2" width="40" height="40" rx="6" fill="none" stroke={traco} strokeWidth="3" />
+      <path d="M2 22h40M22 2v40" stroke={traco} strokeWidth="3" />
+      <rect x="25" y="25" width="14" height="14" rx="2" fill={casa} />
+    </svg>
+  );
+}
+
+/** Marca: LIA (produto, "Lucro com IA") assinada "by nous". `escuro` = sobre fundo tinta. */
+export function Logo({ selo = true, escuro = false }: { selo?: boolean; escuro?: boolean }) {
+  const cor = escuro ? "#f3f4f1" : "#0e1311";
+  return (
+    <div className="flex items-center gap-3">
+      <Simbolo tamanho={34} escuro={escuro} />
+      <div className="flex flex-col gap-1 leading-none">
         <span
-          className="rounded-lg px-2.5 py-1 text-lg leading-none tracking-wide"
           style={{
-            backgroundColor: "var(--brand-yellow)",
-            color: "var(--graphite)",
             fontFamily: "var(--font-logo)",
-            fontWeight: 800,
+            fontWeight: 700,
+            fontSize: 26,
+            letterSpacing: "0.02em",
+            color: cor,
           }}
         >
           LIA
         </span>
         {selo ? (
           <span
-            className="rounded border px-1.5 py-0.5 text-[10px] font-bold tracking-widest"
             style={{
-              borderColor: "var(--brand-yellow)",
-              color: "var(--brand-yellow)",
+              fontFamily: "var(--font-mono)",
+              fontSize: 10,
+              letterSpacing: "0.08em",
+              color: cor,
+              opacity: 0.75,
             }}
           >
-            NOUS
+            LUCRO COM IA · by nous
           </span>
         ) : null}
       </div>
-      <span className="pl-1 text-[11px] tracking-wide" style={{ color: "var(--brand-yellow)" }}>
-        Lucro com IA
-      </span>
     </div>
   );
 }

@@ -48,7 +48,7 @@ export function Topbar({
                   className="min-h-[44px] rounded-md px-2 text-center text-xs font-medium transition-colors sm:px-3 sm:text-sm"
                   style={
                     ativo
-                      ? { backgroundColor: "var(--brand-yellow)", color: "var(--graphite)" }
+                      ? { backgroundColor: "var(--ink)", color: "var(--on-ink)" }
                       : { color: "var(--muted-foreground)" }
                   }
                 >

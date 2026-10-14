@@ -1070,7 +1070,7 @@ function ValidadePage() {
               className="min-h-[44px] rounded-md px-4 text-sm font-medium transition-colors"
               style={
                 visao === o.chave
-                  ? { backgroundColor: "var(--brand-yellow)", color: "var(--graphite)" }
+                  ? { backgroundColor: "var(--ink)", color: "var(--on-ink)" }
                   : { color: "var(--muted-foreground)" }
               }
             >

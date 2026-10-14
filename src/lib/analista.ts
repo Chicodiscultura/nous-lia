@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
 
-/** Uma linha por fornecedor: a recomendação do Delinho Comprador para a próxima janela. */
+/** Uma linha por fornecedor: a recomendação do agente Analista de Compras para a próxima janela. */
 export interface CompradorAlerta {
   data: string;
   codfornec: number;

@@ -78,7 +78,7 @@ function SeletorBase({
             className="min-h-[36px] rounded-md px-3 text-xs font-medium transition-colors sm:text-sm"
             style={
               ativo
-                ? { backgroundColor: "var(--brand-yellow)", color: "var(--graphite)" }
+                ? { backgroundColor: "var(--ink)", color: "var(--on-ink)" }
                 : { color: "var(--muted-foreground)" }
             }
           >

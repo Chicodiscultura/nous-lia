@@ -52,9 +52,8 @@ export function AvisoSync() {
       role="status"
       className="mb-4 flex min-h-[36px] items-center gap-2 rounded-md px-3 py-2 text-[13px] leading-snug sm:text-sm"
       style={{
-        backgroundColor: "color-mix(in srgb, var(--warning) 14%, #fff)",
-        borderLeft: "3px solid var(--warning)",
-        color: "var(--graphite)",
+        backgroundColor: "var(--attention-tint)",
+        color: "var(--ink)",
         fontFamily: "Inter, system-ui, sans-serif",
       }}
     >

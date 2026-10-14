@@ -55,7 +55,7 @@ function LoginPage() {
   return (
     <div
       className="flex min-h-screen items-center justify-center px-4"
-      style={{ backgroundColor: "var(--graphite)" }}
+      style={{ backgroundColor: "var(--background)" }}
     >
       <div className="w-full max-w-sm">
         <div className="mb-6 flex justify-center p-4">

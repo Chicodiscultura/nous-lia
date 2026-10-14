@@ -5,10 +5,9 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system DX Vendas — Delifrios
- * Fundo neutro #F7F6F2, cartões brancos, bordas #E7E4DC, radius 12px.
- * Amarelo #FFC609 apenas acentos, vermelho #E23430 ações primárias,
- * grafite #262320 sidebar.
+ * Design System NOUS (Território A · Livro-razão). Fonte: marca/design-system/tokens.json.
+ * paper = fundo, surface = cartões, ink = texto e ação, verified = SÓ dado conferido,
+ * attention = pede decisão, critical = ruptura/perda. Sem sombra: borda de 1px.
  */
 
 @theme inline {
@@ -50,52 +49,67 @@
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-accent: var(--sidebar-accent);
-  --font-display: "Sora", system-ui, sans-serif;
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-logo: "Sora", system-ui, sans-serif;
-  --font-script: "Inter", system-ui, sans-serif;
+  --font-display: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-logo: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-script: "Instrument Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 
-/* Identidade NOUS / LIA ("Lucro com IA"): tinta azul-petróleo + verde de lucro.
-   Os nomes --brand-yellow / --brand-red vêm do DX Vendas e foram mantidos para
-   não tocar nos componentes: aqui --brand-yellow é o ACENTO (menta) e --brand-red
-   é a cor de AÇÃO primária (verde). Renomear fica para o design system. */
 :root {
-  --radius: 12px;
-  --background: #f4f6f9;
-  --foreground: #0f1b2d;
+  --radius: 4px;
+  --background: #f3f4f1;
+  --foreground: #0e1311;
   --card: #ffffff;
-  --card-foreground: #0f1b2d;
+  --card-foreground: #0e1311;
   --popover: #ffffff;
-  --popover-foreground: #0f1b2d;
-  --primary: #0e9f6e;
-  --primary-foreground: #ffffff;
-  --secondary: #e9eef4;
-  --secondary-foreground: #0f1b2d;
-  --muted: #eef2f6;
-  --muted-foreground: #5f6f83;
-  --accent: #e3f6ee;
-  --accent-foreground: #0f1b2d;
-  --destructive: #d03b3b;
+  --popover-foreground: #0e1311;
+  --primary: #0e1311;
+  --primary-foreground: #f3f4f1;
+  --secondary: #e3e6e1;
+  --secondary-foreground: #0e1311;
+  --muted: #e9ebe6;
+  --muted-foreground: #55605a;
+  --accent: #e3e6e1;
+  --accent-foreground: #0e1311;
+  --destructive: #b3261e;
   --destructive-foreground: #ffffff;
-  --border: #dfe5ec;
-  --input: #dfe5ec;
-  --ring: #2dd4a0;
+  --border: #c9cec8;
+  --input: #c9cec8;
+  --ring: #0e1311;
 
-  --brand-yellow: #2dd4a0;
-  --brand-red: #0e9f6e;
-  --brand-red-hover: #0b7f58;
-  --graphite: #0f1b2d;
+  /* Tokens da marca, com os nomes do Design System. */
+  --paper: #f3f4f1;
+  --surface: #ffffff;
+  --ink: #0e1311;
+  --ink-muted: #55605a;
+  --rule: #c9cec8;
+  --rule-soft: #e3e6e1;
+  --verified: #1b6b4a;
+  --on-verified: #ffffff;
+  --verified-tint: #ddefe6;
+  --attention: #8a5300;
+  --attention-tint: #fbf3e4;
+  --critical: #b3261e;
+  --critical-tint: #fbe9e7;
+  --on-ink: #f3f4f1;
 
-  --positive: #0ca30c;
-  --positive-text: #006300;
-  --warning: #fab219;
-  --severe: #ec835a;
-  --critical: #d03b3b;
+  /* Nomes herdados do DX Vendas, agora apontando para a marca NOUS.
+     --brand-yellow é seleção/destaque (tinta; texto sobre ela usa --on-ink);
+     --brand-red é ação primária (tinta). */
+  --brand-yellow: #0e1311;
+  --brand-red: #0e1311;
+  --brand-red-hover: #263029;
+  --graphite: #0e1311;
 
-  --sidebar: #0f1b2d;
-  --sidebar-foreground: #e4eaf2;
-  --sidebar-accent: rgba(45, 212, 160, 0.16);
+  --positive: #1b6b4a;
+  --positive-text: #0e1311;
+  --warning: #8a5300;
+  --severe: #8a5300;
+
+  --sidebar: #0e1311;
+  --sidebar-foreground: #c4cbc7;
+  --sidebar-accent: rgba(243, 244, 241, 0.12);
 }
 
 @layer base {
@@ -114,7 +128,8 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    font-weight: 800;
+    font-weight: 600;
+    letter-spacing: -0.02em;
   }
 }
 
@@ -125,6 +140,5 @@
 @utility card-surface {
   background-color: var(--card);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: 0 1px 2px rgba(38, 35, 32, 0.05);
+  border-radius: 0;
 }
