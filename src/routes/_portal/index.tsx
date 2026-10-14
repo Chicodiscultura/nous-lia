@@ -1,285 +1,212 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
+import { useMemo } from "react";
 
-import { AvisoConferencia } from "@/components/portal/AvisoConferencia";
-import { Cartao, Carregando, Vazio } from "@/components/portal/Cartao";
-import { GraficoBarras } from "@/components/portal/GraficoBarras";
-import { GraficoLinha } from "@/components/portal/GraficoLinha";
+import { Cartao, Carregando } from "@/components/portal/Cartao";
 import { KpiCard } from "@/components/portal/KpiCard";
 import { Topbar } from "@/components/portal/Topbar";
-import { usePerfil, useSessao, podeVerMargem } from "@/hooks/useSessao";
-import {
-  soma,
-  somarPor,
-  useBonificacoesDia,
-  useClientesNovos,
-  usePedidosDia,
-  useRegistroUnico,
-  useTabela,
-  useVendasDia,
-  useVendasFornecedor,
-  useVendasRca,
-  variacao,
-  type Inadimplencia,
-  type Margem,
-  type PositivacaoMes,
-  type ReceberBuckets,
-  type PagarBuckets,
-} from "@/lib/dados";
-
-import { brl, kg, num, pct } from "@/lib/format";
-import { intervaloDe, periodoAnterior, type Periodo } from "@/lib/periodo";
-import { agruparOutros, mapaDeCores } from "@/lib/serie-cores";
+import { useSessao, usePerfil } from "@/hooks/useSessao";
+import { useCompradorAlertas } from "@/lib/analista";
+import { useEstoqueKpis, useEstoqueSkus } from "@/lib/estoque";
+import { brl, ddmm, num, pct } from "@/lib/format";
+import { useTermometro } from "@/lib/validade";
 
 export const Route = createFileRoute("/_portal/")({
   head: () => ({
     meta: [
-      { title: "Home — DX Vendas Delifrios" },
+      { title: "Início — LIA · NOUS" },
       {
         name: "description",
-        content:
-          "Visão geral de faturamento, kg vendido, positivação e financeiro da Delifrios.",
-      },
-      { property: "og:title", content: "Home — DX Vendas Delifrios" },
-      {
-        property: "og:description",
-        content: "Indicadores comerciais consolidados da distribuidora Delifrios.",
+        content: "Pendências, alertas e o indicador de eficiência da operação.",
       },
     ],
   }),
-  component: HomePage,
+  component: Inicio,
 });
 
-const MES_CORRENTE = new Date().toLocaleDateString("pt-BR", { month: "long" });
+type Severidade = "critico" | "grave" | "atencao";
 
-function HomePage() {
-  const [periodo, setPeriodo] = useState<Periodo>(() => intervaloDe("mes"));
-  const anterior = useMemo(() => periodoAnterior(periodo), [periodo]);
+const COR: Record<Severidade, string> = {
+  critico: "var(--critical)",
+  grave: "var(--severe)",
+  atencao: "var(--warning)",
+};
 
+interface Alerta {
+  id: string;
+  sev: Severidade;
+  texto: string;
+  detalhe: string;
+  to: "/estoque" | "/validade" | "/analista";
+}
+
+function Inicio() {
   const { session } = useSessao();
-  const { data: usuario } = usePerfil(session?.user.email ?? undefined);
-  const margemLiberada = podeVerMargem(usuario?.perfil);
+  const { data: perfil } = usePerfil(session?.user.email ?? undefined);
+  const kpis = useEstoqueKpis();
+  const skus = useEstoqueSkus();
+  const termometro = useTermometro();
+  const analista = useCompradorAlertas();
 
-  const dias = useVendasDia(periodo);
-  const diasAnt = useVendasDia(anterior);
-  const pedidos = usePedidosDia(periodo);
-  const bonificacoes = useBonificacoesDia(periodo);
-  const forn = useVendasFornecedor(periodo);
-  const rca = useVendasRca(periodo);
-  const positivacao = useRegistroUnico<PositivacaoMes>("v_positivacao_mes_atual");
-  const clientesNovos = useClientesNovos(periodo);
-  const inadimplencia = useRegistroUnico<Inadimplencia>("v_inadimplencia");
-  const receber = useRegistroUnico<ReceberBuckets>("v_receber_buckets");
-  const pagar = useRegistroUnico<PagarBuckets>("v_pagar_buckets");
-  const margemMes = useRegistroUnico<Margem>("v_margem_mes_atual");
-  const pastas = useTabela<{ fornecedor: string; pasta: string }>("fornecedor_pasta");
+  const k = kpis.data;
 
+  const validade = useMemo(() => {
+    const l = termometro.data ?? [];
+    const estoque = l.reduce((s, x) => s + Number(x.vl_estoque ?? 0), 0);
+    const vence = l.reduce((s, x) => s + Number(x.vl_vence ?? 0), 0);
+    const critico = l.reduce((s, x) => s + Number(x.vl_critico ?? 0), 0);
+    return { estoque, vence, critico, pctRisco: estoque > 0 ? ((vence + critico) / estoque) * 100 : 0 };
+  }, [termometro.data]);
 
+  // Indicador de eficiência (proposta v1): capital que está girando ÷ capital total.
+  // Produtivo = faixas saudável e crítico (giram). Improdutivo = excesso, sem giro e queimado.
+  const eficiencia = useMemo(() => {
+    const l = skus.data ?? [];
+    const cap = (faixas: string[]) =>
+      l.filter((s) => faixas.includes(s.faixa)).reduce((s, x) => s + Number(x.capital ?? 0), 0);
+    const produtivo = cap(["saudavel", "critico"]);
+    const improdutivo = cap(["excesso", "sem giro", "queimado"]);
+    const total = produtivo + improdutivo;
+    return { produtivo, improdutivo, valor: total > 0 ? (produtivo / total) * 100 : null };
+  }, [skus.data]);
 
-  const linhas = dias.data ?? [];
-  const faturamento = soma(linhas, "faturamento");
-  const kgTotal = soma(linhas, "kg");
-  const faturamentoAnt = soma(diasAnt.data ?? [], "faturamento");
-
-  const dadosFornecedor = useMemo(() => {
-    const agrupado = somarPor(forn.data ?? [], "fornecedor", ["faturamento"]);
-    return agruparOutros(
-      Object.entries(agrupado).map(([nome, v]) => ({ nome, valor: v["faturamento"] ?? 0 })),
-    );
-  }, [forn.data]);
-
-  const coresFornecedor = useMemo(() => {
-    const canonico = (pastas.data ?? []).map((p) => p.fornecedor);
-    const base = canonico.length
-      ? canonico
-      : Object.keys(somarPor(forn.data ?? [], "fornecedor", ["faturamento"])).sort();
-    return mapaDeCores(base);
-  }, [pastas.data, forn.data]);
-
-  const dadosRca = useMemo(() => {
-    const acc: Record<string, { equipe: string; valor: number }> = {};
-    for (const l of rca.data ?? []) {
-      const nome = l.interno ? "Vendas Internas" : l.vendedor;
-      const equipe = l.interno ? "Interno" : (l.equipe ?? "—");
-      acc[nome] ??= { equipe, valor: 0 };
-      acc[nome].valor += Number(l.faturamento ?? 0);
+  const alertas = useMemo<Alerta[]>(() => {
+    const out: Alerta[] = [];
+    for (const a of analista.data ?? []) {
+      if (Number(a.skus_risco ?? 0) > 0) {
+        out.push({
+          id: `analista-${a.codfornec}`,
+          sev: "critico",
+          texto: `${num(a.skus_risco)} SKUs rompem antes de ${ddmm(a.proxima_entrega)}`,
+          detalhe: `Perda projetada ${brl(a.perda_projetada)} · pedido sugerido de ${num(a.kg_sugerido)} kg aguardando aprovação`,
+          to: "/analista",
+        });
+      }
     }
-    return Object.entries(acc)
-      .map(([nome, v]) => ({ nome, equipe: v.equipe, valor: v.valor }))
-      .sort(
-        (a, b) => a.equipe.localeCompare(b.equipe) || b.valor - a.valor,
-      );
-  }, [rca.data]);
+    if (k && Number(k.skus_ruptura ?? 0) > 0) {
+      out.push({
+        id: "ruptura",
+        sev: "critico",
+        texto: `${num(k.skus_ruptura)} SKUs em ruptura`,
+        detalhe: `Venda perdida de ${brl(k.ruptura_rs_mes)} no mês`,
+        to: "/estoque",
+      });
+    }
+    if (validade.vence + validade.critico > 0) {
+      out.push({
+        id: "validade",
+        sev: validade.critico > 0 ? "grave" : "atencao",
+        texto: `${brl(validade.vence + validade.critico)} em risco de validade`,
+        detalhe: `${pct(validade.pctRisco)} do estoque a custo · ${brl(validade.critico)} já na janela crítica`,
+        to: "/validade",
+      });
+    }
+    if (k && Number(k.skus_criticos ?? 0) > 0) {
+      out.push({
+        id: "criticos",
+        sev: "grave",
+        texto: `${num(k.skus_criticos)} SKUs com cobertura crítica`,
+        detalhe: "Estoque cobre menos dias que o ciclo de reposição",
+        to: "/estoque",
+      });
+    }
+    if (k && Number(k.capital_excesso ?? 0) > 0) {
+      out.push({
+        id: "excesso",
+        sev: "atencao",
+        texto: `${brl(k.capital_excesso)} parados em excesso`,
+        detalhe: "Cobertura acima do limite definido para o fornecedor",
+        to: "/estoque",
+      });
+    }
+    return out;
+  }, [analista.data, k, validade]);
 
-  const coresRca = useMemo(
-    () => mapaDeCores(dadosRca.map((d) => d.nome)),
-    [dadosRca],
-  );
-
-  const evolucao = useMemo(
-    () =>
-      [...linhas]
-        .sort((a, b) => a.data.localeCompare(b.data))
-        .map((l) => ({ data: l.data, valor: Number(l.faturamento ?? 0) })),
-    [linhas],
-  );
-
-  const vencido =
-    (receber.data?.vencido_ate_2d ?? 0) +
-    (receber.data?.vencido_3_a_7d ?? 0) +
-    (receber.data?.vencido_8_a_15d ?? 0) +
-    (receber.data?.vencido_16_a_30d ?? 0) +
-    (receber.data?.vencido_mais_30d ?? 0);
-
-  const margemPct = margemMes.data?.margem_pct ?? null;
-  const margemValor = margemMes.data?.margem_valor ?? 0;
-  const inad = inadimplencia.data;
-
-
+  const carregando = kpis.isLoading || skus.isLoading || termometro.isLoading;
 
   return (
-    <>
+    <div className="space-y-6">
       <Topbar
-        titulo="Home"
-        periodo={periodo}
-        onPeriodo={setPeriodo}
+        titulo={perfil?.nome ? `Olá, ${perfil.nome.split(" ")[0]}` : "Início"}
+        descricao={`${perfil?.tenant ?? "Sua operação"} · dados de ${k?.data_snapshot ? k.data_snapshot.split("-").reverse().join("/") : "—"}`}
       />
 
-      <AvisoConferencia />
+      {carregando ? (
+        <Carregando />
+      ) : (
+        <>
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <KpiCard
+              titulo="Capital em estoque"
+              valor={brl(k?.capital_hoje)}
+              detalhe={`Giro 30d: ${num(k?.giro_30d, 2)}×`}
+              destaque
+            />
+            <KpiCard
+              titulo="Venda perdida no mês"
+              valor={brl(k?.ruptura_rs_mes)}
+              detalhe={`${num(k?.skus_ruptura)} SKUs em ruptura`}
+              status={Number(k?.ruptura_rs_mes ?? 0) > 0 ? "critico" : "positivo"}
+              destaque
+            />
+            <KpiCard
+              titulo="Risco de validade"
+              valor={brl(validade.vence + validade.critico)}
+              detalhe={`${pct(validade.pctRisco)} do estoque a custo`}
+              status={validade.pctRisco > 5 ? "grave" : "atencao"}
+              destaque
+            />
+            <KpiCard
+              titulo="Eficiência do capital"
+              valor={eficiencia.valor == null ? "—" : pct(eficiencia.valor)}
+              detalhe="do capital está girando"
+              status={
+                eficiencia.valor != null && eficiencia.valor >= 80
+                  ? "positivo"
+                  : eficiencia.valor != null && eficiencia.valor >= 60
+                    ? "atencao"
+                    : "grave"
+              }
+              destaque
+            />
+          </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <Cartao titulo="Pendências e alertas">
+            {alertas.length === 0 ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                Nenhuma pendência. A operação está dentro dos limites.
+              </p>
+            ) : (
+              <ul className="divide-y">
+                {alertas.map((a) => (
+                  <li key={a.id}>
+                    <Link
+                      to={a.to}
+                      className="flex min-h-[56px] items-center gap-3 py-3 transition-colors hover:bg-muted/60"
+                    >
+                      <span
+                        aria-hidden
+                        className="size-2.5 shrink-0 rounded-full"
+                        style={{ backgroundColor: COR[a.sev] }}
+                      />
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-sm font-bold">{a.texto}</span>
+                        <span className="block text-xs text-muted-foreground">{a.detalhe}</span>
+                      </span>
+                      <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Cartao>
 
-        <KpiCard
-          titulo="Faturamento do período"
-          valor={brl(faturamento)}
-          variacao={variacao(faturamento, faturamentoAnt)}
-          destaque
-        />
-        <KpiCard
-          titulo="A faturar"
-          valor={brl(soma(pedidos.data ?? [], "a_faturar"))}
-          destaque
-          detalhe={`Pedidos no período ${brl(soma(pedidos.data ?? [], "valor_pedidos"))}`}
-        />
-        <KpiCard
-          titulo="Bonificações"
-          ponto="var(--warning)"
-          valor={brl(soma(bonificacoes.data ?? [], "valor"))}
-          detalhe={`${brl(soma(bonificacoes.data ?? [], "uso_interno"))} interno · ${brl(
-            soma(bonificacoes.data ?? [], "para_clientes"),
-          )} clientes`}
-        />
-        <KpiCard titulo="Kg vendido" valor={kg(kgTotal)} />
-        <KpiCard
-          titulo="R$/Kg"
-          valor={kgTotal > 0 ? brl(faturamento / kgTotal, true) : "—"}
-        />
-        <KpiCard
-          titulo="Clientes positivados no mês"
-          valor={num(positivacao.data?.clientes_positivados ?? 0)}
-          detalhe={`Base ativa ${num(positivacao.data?.base_ativa ?? 0)} · ${pct(
-            positivacao.data?.pct_positivacao ?? 0,
-          )} · ${MES_CORRENTE} (não segue o período)`}
-        />
-        <KpiCard
-          titulo="Clientes novos"
-          valor={num(clientesNovos.data?.novos_periodo ?? 0)}
-          detalhe={`${num(clientesNovos.data?.novos_mes ?? 0)} no mês`}
-        />
-
-        <KpiCard
-          titulo="Margem de contribuição"
-          restrito
-          valor={
-            margemLiberada
-              ? margemPct !== null
-                ? pct(margemPct, 1)
-                : "—"
-              : "•••••"
-          }
-          detalhe={
-            margemLiberada
-              ? `${brl(margemValor)} no mês`
-              : "Disponível para perfis supervisor e diretoria"
-          }
-
-        />
-        <KpiCard
-          titulo="Contas a receber vencidas"
-          valor={brl(vencido)}
-          status={vencido > 0 ? "critico" : "positivo"}
-          detalhe={`${num(inad?.clientes ?? 0)} clientes · ${num(
-            inad?.clientes_mais_30d ?? 0,
-          )} acima de 30 dias · total em aberto ${brl(receber.data?.total_aberto ?? 0)}`}
-        />
-
-        <KpiCard
-          titulo="A pagar — próximos 2 dias"
-          valor={brl(pagar.data?.proximos_2d ?? 0)}
-          status="atencao"
-          detalhe={`3 a 10 dias ${brl(pagar.data?.de_3_a_10d ?? 0)}`}
-        />
-        <KpiCard
-          titulo="A pagar — já vencidas"
-          valor={brl(pagar.data?.ja_vencidos ?? 0)}
-          status={(pagar.data?.ja_vencidos ?? 0) > 0 ? "critico" : "positivo"}
-          detalhe={`Total em aberto ${brl(pagar.data?.total_aberto ?? 0)}`}
-        />
-
-        <KpiCard
-          titulo="Notas emitidas"
-          valor={num(soma(linhas, "notas"))}
-          detalhe={`${num(soma(linhas, "clientes_atendidos"))} atendimentos`}
-        />
-      </div>
-
-      <div className="mt-6 grid gap-4 xl:grid-cols-2">
-        <Cartao titulo="Vendas por fornecedor">
-          {forn.isLoading ? (
-            <Carregando />
-          ) : dadosFornecedor.length ? (
-            <GraficoBarras dados={dadosFornecedor} cores={coresFornecedor} />
-          ) : (
-            <Vazio />
-          )}
-        </Cartao>
-
-        <Cartao titulo="Vendas por RCA (por equipe)">
-          {rca.isLoading ? (
-            <Carregando />
-          ) : dadosRca.length ? (
-            <div className="space-y-5">
-              {Array.from(new Set(dadosRca.map((d) => d.equipe))).map((equipe) => {
-                const itens = dadosRca.filter((d) => d.equipe === equipe);
-                return (
-                  <div key={equipe}>
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      {equipe}
-                    </p>
-                    <GraficoBarras
-                      dados={itens.map((i) => ({ nome: i.nome, valor: i.valor }))}
-                      cores={coresRca}
-                      altura={Math.max(120, itens.length * 42)}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <Vazio />
-          )}
-        </Cartao>
-      </div>
-
-      <Cartao titulo="Evolução diária do faturamento" className="mt-6">
-        {dias.isLoading ? (
-          <Carregando />
-        ) : evolucao.length ? (
-          <GraficoLinha dados={evolucao} />
-        ) : (
-          <Vazio />
-        )}
-      </Cartao>
-    </>
+          <p className="text-xs text-muted-foreground">
+            Eficiência do capital = capital em SKUs saudáveis ou em cobertura crítica ÷ capital total
+            (exclui excesso, sem giro e queimado). Indicador da v1, sujeito à calibração com a operação.
+          </p>
+        </>
+      )}
+    </div>
   );
 }

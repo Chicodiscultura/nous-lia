@@ -2,15 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
 
-export interface AbaPortal {
-  codigo: string;
-  rotulo: string;
-  rota: string;
-  ordem: number;
-  perfis_padrao: string[] | null;
-}
-
-/** Códigos das abas liberadas para o usuário logado (resolve o padrão do perfil). */
+/** Códigos das abas liberadas para o usuário logado (função minhas_abas, decidida no banco). */
 export function useMinhasAbas() {
   return useQuery({
     queryKey: ["minhas_abas"],
@@ -24,36 +16,11 @@ export function useMinhasAbas() {
   });
 }
 
-/** Catálogo de abas do portal, ordenado. */
-export function useAbasPortal() {
-  return useQuery({
-    queryKey: ["abas_portal"],
-    staleTime: 30 * 60 * 1000,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("abas_portal")
-        .select("codigo, rotulo, rota, ordem, perfis_padrao")
-        .order("ordem");
-      if (error) throw error;
-      return (data ?? []) as AbaPortal[];
-    },
-  });
-}
-
 /** Mapa rota → código de aba, usado pela sidebar e pela guarda de rota. */
 export const CODIGO_POR_ROTA: { rota: string; codigo: string }[] = [
-  { rota: "/vendas", codigo: "vendas" },
-  { rota: "/faturamento", codigo: "faturamento" },
-  { rota: "/fornecedores", codigo: "fornecedores" },
   { rota: "/estoque", codigo: "estoque" },
-  { rota: "/danone", codigo: "danone" },
-  { rota: "/politica", codigo: "politica" },
-  { rota: "/clientes", codigo: "clientes" },
-  { rota: "/carteira", codigo: "carteira" },
   { rota: "/validade", codigo: "validade" },
-  { rota: "/financeiro", codigo: "financeiro" },
-  { rota: "/metas", codigo: "metas" },
-  { rota: "/admin", codigo: "admin" },
+  { rota: "/analista", codigo: "analista" },
 ];
 
 /** Código da aba correspondente ao pathname atual ("/" → home). */

@@ -8,16 +8,15 @@ export const Route = createFileRoute("/login")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Entrar — DX Vendas Delifrios" },
+      { title: "Entrar — LIA · NOUS" },
       {
         name: "description",
-        content:
-          "Acesso ao portal de indicadores comerciais DX Vendas da Delifrios, distribuidora de Itaberaba-BA.",
+        content: "LIA — Lucro com IA. Portal de inteligência em gestão da NOUS para distribuidores e fabricantes.",
       },
-      { property: "og:title", content: "Entrar — DX Vendas Delifrios" },
+      { property: "og:title", content: "LIA — Lucro com IA" },
       {
         property: "og:description",
-        content: "Portal de indicadores comerciais da Delifrios.",
+        content: "Inteligência aplicada à operação: estoque, validade e compras com IA.",
       },
     ],
   }),
@@ -65,9 +64,9 @@ function LoginPage() {
 
         <form onSubmit={entrar} className="card-surface space-y-4 p-6">
           <div>
-            <h1 className="text-lg font-extrabold">Acessar o portal</h1>
+            <h1 className="text-lg font-extrabold">Acessar a LIA</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Indicadores comerciais Delifrios
+              Inteligência aplicada à operação
             </p>
           </div>
 
@@ -80,7 +79,7 @@ function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="mt-1 w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2"
               style={{ borderColor: "var(--border)" }}
-              placeholder="voce@delifrios.com.br"
+              placeholder="voce@empresa.com.br"
             />
           </label>
 

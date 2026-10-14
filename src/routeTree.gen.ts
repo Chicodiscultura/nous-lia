@@ -12,20 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PortalRouteImport } from './routes/_portal'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PortalIndexRouteImport } from './routes/_portal/index'
-import { Route as PortalAdminRouteImport } from './routes/_portal/admin'
-import { Route as PortalCarteiraRouteImport } from './routes/_portal/carteira'
-import { Route as PortalClientesRouteImport } from './routes/_portal/clientes'
-import { Route as PortalDanoneRouteImport } from './routes/_portal/danone'
+import { Route as PortalAnalistaRouteImport } from './routes/_portal/analista'
 import { Route as PortalEstoqueRouteImport } from './routes/_portal/estoque'
-import { Route as PortalFaturamentoRouteImport } from './routes/_portal/faturamento'
-import { Route as PortalFinanceiroRouteImport } from './routes/_portal/financeiro'
-import { Route as PortalFornecedoresRouteImport } from './routes/_portal/fornecedores'
-import { Route as PortalMetasRouteImport } from './routes/_portal/metas'
-import { Route as PortalPoliticaRouteImport } from './routes/_portal/politica'
 import { Route as PortalValidadeRouteImport } from './routes/_portal/validade'
-import { Route as PortalVendasRouteImport } from './routes/_portal/vendas'
-import { Route as PortalAdminUsuariosRouteImport } from './routes/_portal/admin_.usuarios'
-import { Route as PortalFornecedoresFornecedorRouteImport } from './routes/_portal/fornecedores.$fornecedor'
 
 const PortalRoute = PortalRouteImport.update({
   id: '/_portal',
@@ -41,24 +30,9 @@ const PortalIndexRoute = PortalIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PortalRoute,
 } as any)
-const PortalAdminRoute = PortalAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => PortalRoute,
-} as any)
-const PortalCarteiraRoute = PortalCarteiraRouteImport.update({
-  id: '/carteira',
-  path: '/carteira',
-  getParentRoute: () => PortalRoute,
-} as any)
-const PortalClientesRoute = PortalClientesRouteImport.update({
-  id: '/clientes',
-  path: '/clientes',
-  getParentRoute: () => PortalRoute,
-} as any)
-const PortalDanoneRoute = PortalDanoneRouteImport.update({
-  id: '/danone',
-  path: '/danone',
+const PortalAnalistaRoute = PortalAnalistaRouteImport.update({
+  id: '/analista',
+  path: '/analista',
   getParentRoute: () => PortalRoute,
 } as any)
 const PortalEstoqueRoute = PortalEstoqueRouteImport.update({
@@ -66,165 +40,48 @@ const PortalEstoqueRoute = PortalEstoqueRouteImport.update({
   path: '/estoque',
   getParentRoute: () => PortalRoute,
 } as any)
-const PortalFaturamentoRoute = PortalFaturamentoRouteImport.update({
-  id: '/faturamento',
-  path: '/faturamento',
-  getParentRoute: () => PortalRoute,
-} as any)
-const PortalFinanceiroRoute = PortalFinanceiroRouteImport.update({
-  id: '/financeiro',
-  path: '/financeiro',
-  getParentRoute: () => PortalRoute,
-} as any)
-const PortalFornecedoresRoute = PortalFornecedoresRouteImport.update({
-  id: '/fornecedores',
-  path: '/fornecedores',
-  getParentRoute: () => PortalRoute,
-} as any)
-const PortalMetasRoute = PortalMetasRouteImport.update({
-  id: '/metas',
-  path: '/metas',
-  getParentRoute: () => PortalRoute,
-} as any)
-const PortalPoliticaRoute = PortalPoliticaRouteImport.update({
-  id: '/politica',
-  path: '/politica',
-  getParentRoute: () => PortalRoute,
-} as any)
 const PortalValidadeRoute = PortalValidadeRouteImport.update({
   id: '/validade',
   path: '/validade',
   getParentRoute: () => PortalRoute,
 } as any)
-const PortalVendasRoute = PortalVendasRouteImport.update({
-  id: '/vendas',
-  path: '/vendas',
-  getParentRoute: () => PortalRoute,
-} as any)
-const PortalAdminUsuariosRoute = PortalAdminUsuariosRouteImport.update({
-  id: '/admin_/usuarios',
-  path: '/admin/usuarios',
-  getParentRoute: () => PortalRoute,
-} as any)
-const PortalFornecedoresFornecedorRoute =
-  PortalFornecedoresFornecedorRouteImport.update({
-    id: '/$fornecedor',
-    path: '/$fornecedor',
-    getParentRoute: () => PortalFornecedoresRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PortalIndexRoute
   '/login': typeof LoginRoute
-  '/admin': typeof PortalAdminRoute
-  '/carteira': typeof PortalCarteiraRoute
-  '/clientes': typeof PortalClientesRoute
-  '/danone': typeof PortalDanoneRoute
+  '/analista': typeof PortalAnalistaRoute
   '/estoque': typeof PortalEstoqueRoute
-  '/faturamento': typeof PortalFaturamentoRoute
-  '/financeiro': typeof PortalFinanceiroRoute
-  '/fornecedores': typeof PortalFornecedoresRouteWithChildren
-  '/metas': typeof PortalMetasRoute
-  '/politica': typeof PortalPoliticaRoute
   '/validade': typeof PortalValidadeRoute
-  '/vendas': typeof PortalVendasRoute
-  '/admin/usuarios': typeof PortalAdminUsuariosRoute
-  '/fornecedores/$fornecedor': typeof PortalFornecedoresFornecedorRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
-  '/admin': typeof PortalAdminRoute
-  '/carteira': typeof PortalCarteiraRoute
-  '/clientes': typeof PortalClientesRoute
-  '/danone': typeof PortalDanoneRoute
+  '/analista': typeof PortalAnalistaRoute
   '/estoque': typeof PortalEstoqueRoute
-  '/faturamento': typeof PortalFaturamentoRoute
-  '/financeiro': typeof PortalFinanceiroRoute
-  '/fornecedores': typeof PortalFornecedoresRouteWithChildren
-  '/metas': typeof PortalMetasRoute
-  '/politica': typeof PortalPoliticaRoute
   '/validade': typeof PortalValidadeRoute
-  '/vendas': typeof PortalVendasRoute
   '/': typeof PortalIndexRoute
-  '/admin/usuarios': typeof PortalAdminUsuariosRoute
-  '/fornecedores/$fornecedor': typeof PortalFornecedoresFornecedorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_portal': typeof PortalRouteWithChildren
   '/login': typeof LoginRoute
-  '/_portal/admin': typeof PortalAdminRoute
-  '/_portal/carteira': typeof PortalCarteiraRoute
-  '/_portal/clientes': typeof PortalClientesRoute
-  '/_portal/danone': typeof PortalDanoneRoute
+  '/_portal/analista': typeof PortalAnalistaRoute
   '/_portal/estoque': typeof PortalEstoqueRoute
-  '/_portal/faturamento': typeof PortalFaturamentoRoute
-  '/_portal/financeiro': typeof PortalFinanceiroRoute
-  '/_portal/fornecedores': typeof PortalFornecedoresRouteWithChildren
-  '/_portal/metas': typeof PortalMetasRoute
-  '/_portal/politica': typeof PortalPoliticaRoute
   '/_portal/validade': typeof PortalValidadeRoute
-  '/_portal/vendas': typeof PortalVendasRoute
   '/_portal/': typeof PortalIndexRoute
-  '/_portal/admin_/usuarios': typeof PortalAdminUsuariosRoute
-  '/_portal/fornecedores/$fornecedor': typeof PortalFornecedoresFornecedorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/login'
-    | '/admin'
-    | '/carteira'
-    | '/clientes'
-    | '/danone'
-    | '/estoque'
-    | '/faturamento'
-    | '/financeiro'
-    | '/fornecedores'
-    | '/metas'
-    | '/politica'
-    | '/validade'
-    | '/vendas'
-    | '/admin/usuarios'
-    | '/fornecedores/$fornecedor'
+  fullPaths: '/' | '/login' | '/analista' | '/estoque' | '/validade'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/login'
-    | '/admin'
-    | '/carteira'
-    | '/clientes'
-    | '/danone'
-    | '/estoque'
-    | '/faturamento'
-    | '/financeiro'
-    | '/fornecedores'
-    | '/metas'
-    | '/politica'
-    | '/validade'
-    | '/vendas'
-    | '/'
-    | '/admin/usuarios'
-    | '/fornecedores/$fornecedor'
+  to: '/login' | '/analista' | '/estoque' | '/validade' | '/'
   id:
     | '__root__'
     | '/_portal'
     | '/login'
-    | '/_portal/admin'
-    | '/_portal/carteira'
-    | '/_portal/clientes'
-    | '/_portal/danone'
+    | '/_portal/analista'
     | '/_portal/estoque'
-    | '/_portal/faturamento'
-    | '/_portal/financeiro'
-    | '/_portal/fornecedores'
-    | '/_portal/metas'
-    | '/_portal/politica'
     | '/_portal/validade'
-    | '/_portal/vendas'
     | '/_portal/'
-    | '/_portal/admin_/usuarios'
-    | '/_portal/fornecedores/$fornecedor'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -255,32 +112,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalIndexRouteImport
       parentRoute: typeof PortalRoute
     }
-    '/_portal/admin': {
-      id: '/_portal/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof PortalAdminRouteImport
-      parentRoute: typeof PortalRoute
-    }
-    '/_portal/carteira': {
-      id: '/_portal/carteira'
-      path: '/carteira'
-      fullPath: '/carteira'
-      preLoaderRoute: typeof PortalCarteiraRouteImport
-      parentRoute: typeof PortalRoute
-    }
-    '/_portal/clientes': {
-      id: '/_portal/clientes'
-      path: '/clientes'
-      fullPath: '/clientes'
-      preLoaderRoute: typeof PortalClientesRouteImport
-      parentRoute: typeof PortalRoute
-    }
-    '/_portal/danone': {
-      id: '/_portal/danone'
-      path: '/danone'
-      fullPath: '/danone'
-      preLoaderRoute: typeof PortalDanoneRouteImport
+    '/_portal/analista': {
+      id: '/_portal/analista'
+      path: '/analista'
+      fullPath: '/analista'
+      preLoaderRoute: typeof PortalAnalistaRouteImport
       parentRoute: typeof PortalRoute
     }
     '/_portal/estoque': {
@@ -290,41 +126,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalEstoqueRouteImport
       parentRoute: typeof PortalRoute
     }
-    '/_portal/faturamento': {
-      id: '/_portal/faturamento'
-      path: '/faturamento'
-      fullPath: '/faturamento'
-      preLoaderRoute: typeof PortalFaturamentoRouteImport
-      parentRoute: typeof PortalRoute
-    }
-    '/_portal/financeiro': {
-      id: '/_portal/financeiro'
-      path: '/financeiro'
-      fullPath: '/financeiro'
-      preLoaderRoute: typeof PortalFinanceiroRouteImport
-      parentRoute: typeof PortalRoute
-    }
-    '/_portal/fornecedores': {
-      id: '/_portal/fornecedores'
-      path: '/fornecedores'
-      fullPath: '/fornecedores'
-      preLoaderRoute: typeof PortalFornecedoresRouteImport
-      parentRoute: typeof PortalRoute
-    }
-    '/_portal/metas': {
-      id: '/_portal/metas'
-      path: '/metas'
-      fullPath: '/metas'
-      preLoaderRoute: typeof PortalMetasRouteImport
-      parentRoute: typeof PortalRoute
-    }
-    '/_portal/politica': {
-      id: '/_portal/politica'
-      path: '/politica'
-      fullPath: '/politica'
-      preLoaderRoute: typeof PortalPoliticaRouteImport
-      parentRoute: typeof PortalRoute
-    }
     '/_portal/validade': {
       id: '/_portal/validade'
       path: '/validade'
@@ -332,73 +133,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalValidadeRouteImport
       parentRoute: typeof PortalRoute
     }
-    '/_portal/vendas': {
-      id: '/_portal/vendas'
-      path: '/vendas'
-      fullPath: '/vendas'
-      preLoaderRoute: typeof PortalVendasRouteImport
-      parentRoute: typeof PortalRoute
-    }
-    '/_portal/admin_/usuarios': {
-      id: '/_portal/admin_/usuarios'
-      path: '/admin/usuarios'
-      fullPath: '/admin/usuarios'
-      preLoaderRoute: typeof PortalAdminUsuariosRouteImport
-      parentRoute: typeof PortalRoute
-    }
-    '/_portal/fornecedores/$fornecedor': {
-      id: '/_portal/fornecedores/$fornecedor'
-      path: '/$fornecedor'
-      fullPath: '/fornecedores/$fornecedor'
-      preLoaderRoute: typeof PortalFornecedoresFornecedorRouteImport
-      parentRoute: typeof PortalFornecedoresRoute
-    }
   }
 }
 
-interface PortalFornecedoresRouteChildren {
-  PortalFornecedoresFornecedorRoute: typeof PortalFornecedoresFornecedorRoute
-}
-
-const PortalFornecedoresRouteChildren: PortalFornecedoresRouteChildren = {
-  PortalFornecedoresFornecedorRoute: PortalFornecedoresFornecedorRoute,
-}
-
-const PortalFornecedoresRouteWithChildren =
-  PortalFornecedoresRoute._addFileChildren(PortalFornecedoresRouteChildren)
-
 interface PortalRouteChildren {
-  PortalAdminRoute: typeof PortalAdminRoute
-  PortalCarteiraRoute: typeof PortalCarteiraRoute
-  PortalClientesRoute: typeof PortalClientesRoute
-  PortalDanoneRoute: typeof PortalDanoneRoute
+  PortalAnalistaRoute: typeof PortalAnalistaRoute
   PortalEstoqueRoute: typeof PortalEstoqueRoute
-  PortalFaturamentoRoute: typeof PortalFaturamentoRoute
-  PortalFinanceiroRoute: typeof PortalFinanceiroRoute
-  PortalFornecedoresRoute: typeof PortalFornecedoresRouteWithChildren
-  PortalMetasRoute: typeof PortalMetasRoute
-  PortalPoliticaRoute: typeof PortalPoliticaRoute
   PortalValidadeRoute: typeof PortalValidadeRoute
-  PortalVendasRoute: typeof PortalVendasRoute
   PortalIndexRoute: typeof PortalIndexRoute
-  PortalAdminUsuariosRoute: typeof PortalAdminUsuariosRoute
 }
 
 const PortalRouteChildren: PortalRouteChildren = {
-  PortalAdminRoute: PortalAdminRoute,
-  PortalCarteiraRoute: PortalCarteiraRoute,
-  PortalClientesRoute: PortalClientesRoute,
-  PortalDanoneRoute: PortalDanoneRoute,
+  PortalAnalistaRoute: PortalAnalistaRoute,
   PortalEstoqueRoute: PortalEstoqueRoute,
-  PortalFaturamentoRoute: PortalFaturamentoRoute,
-  PortalFinanceiroRoute: PortalFinanceiroRoute,
-  PortalFornecedoresRoute: PortalFornecedoresRouteWithChildren,
-  PortalMetasRoute: PortalMetasRoute,
-  PortalPoliticaRoute: PortalPoliticaRoute,
   PortalValidadeRoute: PortalValidadeRoute,
-  PortalVendasRoute: PortalVendasRoute,
   PortalIndexRoute: PortalIndexRoute,
-  PortalAdminUsuariosRoute: PortalAdminUsuariosRoute,
 }
 
 const PortalRouteWithChildren =

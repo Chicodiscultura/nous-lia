@@ -1,23 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import {
-  AlarmClock,
-  Boxes,
-  Home,
-
-  ShoppingCart,
-  ReceiptText,
-  Truck,
-  Milk,
-  Thermometer,
-  Trophy,
-  Users,
-  Wallet,
-  Target,
-  Settings,
-  LogOut,
-  Menu,
-  X,
-} from "lucide-react";
+import { Bot, Boxes, Home, Thermometer, LogOut, Menu, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { Logo } from "./Logo";
@@ -25,29 +7,10 @@ import { supabase } from "@/lib/supabase";
 import { useMinhasAbas } from "@/lib/abas";
 
 const itens = [
-  { to: "/", codigo: "home", rotulo: "Home", icone: Home },
-  { to: "/vendas", codigo: "vendas", rotulo: "Vendas", icone: ShoppingCart },
-  {
-    to: "/faturamento",
-    codigo: "faturamento",
-    rotulo: "Faturamento",
-    icone: ReceiptText,
-  },
-  {
-    to: "/fornecedores",
-    codigo: "fornecedores",
-    rotulo: "Fornecedores",
-    icone: Truck,
-  },
+  { to: "/", codigo: "home", rotulo: "Início", icone: Home },
   { to: "/estoque", codigo: "estoque", rotulo: "Estoque", icone: Boxes },
-  { to: "/danone", codigo: "danone", rotulo: "Danone", icone: Milk },
-  { to: "/clientes", codigo: "clientes", rotulo: "Clientes", icone: Users },
-  { to: "/carteira", codigo: "carteira", rotulo: "Carteira", icone: AlarmClock },
   { to: "/validade", codigo: "validade", rotulo: "Validade", icone: Thermometer },
-  { to: "/financeiro", codigo: "financeiro", rotulo: "Financeiro", icone: Wallet },
-  { to: "/metas", codigo: "metas", rotulo: "Metas & Comissões", icone: Target },
-  { to: "/politica", codigo: "politica", rotulo: "Política Comercial", icone: Trophy },
-  { to: "/admin", codigo: "admin", rotulo: "Admin", icone: Settings },
+  { to: "/analista", codigo: "analista", rotulo: "Analista", icone: Bot },
 ] as const;
 
 type Item = (typeof itens)[number];
@@ -187,12 +150,12 @@ export function Sidebar() {
             className="rounded-lg px-2 py-1 text-sm"
             style={{
               backgroundColor: "var(--brand-yellow)",
-              color: "var(--brand-red)",
+              color: "var(--graphite)",
               fontFamily: "var(--font-logo)",
-              fontWeight: 700,
+              fontWeight: 800,
             }}
           >
-            D
+            L
           </span>
         </div>
         <Navegacao pathname={pathname} compacto visiveis={visiveis} />

@@ -50,38 +50,42 @@
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-accent: var(--sidebar-accent);
-  --font-display: "Nunito", system-ui, sans-serif;
+  --font-display: "Sora", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-logo: "Quicksand", system-ui, sans-serif;
-  --font-script: "Caveat", cursive;
+  --font-logo: "Sora", system-ui, sans-serif;
+  --font-script: "Inter", system-ui, sans-serif;
 }
 
+/* Identidade NOUS / LIA ("Lucro com IA"): tinta azul-petróleo + verde de lucro.
+   Os nomes --brand-yellow / --brand-red vêm do DX Vendas e foram mantidos para
+   não tocar nos componentes: aqui --brand-yellow é o ACENTO (menta) e --brand-red
+   é a cor de AÇÃO primária (verde). Renomear fica para o design system. */
 :root {
   --radius: 12px;
-  --background: #f7f6f2;
-  --foreground: #262320;
+  --background: #f4f6f9;
+  --foreground: #0f1b2d;
   --card: #ffffff;
-  --card-foreground: #262320;
+  --card-foreground: #0f1b2d;
   --popover: #ffffff;
-  --popover-foreground: #262320;
-  --primary: #e23430;
+  --popover-foreground: #0f1b2d;
+  --primary: #0e9f6e;
   --primary-foreground: #ffffff;
-  --secondary: #efece4;
-  --secondary-foreground: #262320;
-  --muted: #f1efe9;
-  --muted-foreground: #7a746b;
-  --accent: #fff6d6;
-  --accent-foreground: #262320;
+  --secondary: #e9eef4;
+  --secondary-foreground: #0f1b2d;
+  --muted: #eef2f6;
+  --muted-foreground: #5f6f83;
+  --accent: #e3f6ee;
+  --accent-foreground: #0f1b2d;
   --destructive: #d03b3b;
   --destructive-foreground: #ffffff;
-  --border: #e7e4dc;
-  --input: #e7e4dc;
-  --ring: #ffc609;
+  --border: #dfe5ec;
+  --input: #dfe5ec;
+  --ring: #2dd4a0;
 
-  --brand-yellow: #ffc609;
-  --brand-red: #e23430;
-  --brand-red-hover: #c22823;
-  --graphite: #262320;
+  --brand-yellow: #2dd4a0;
+  --brand-red: #0e9f6e;
+  --brand-red-hover: #0b7f58;
+  --graphite: #0f1b2d;
 
   --positive: #0ca30c;
   --positive-text: #006300;
@@ -89,9 +93,9 @@
   --severe: #ec835a;
   --critical: #d03b3b;
 
-  --sidebar: #262320;
-  --sidebar-foreground: #e9e6df;
-  --sidebar-accent: rgba(255, 198, 9, 0.16);
+  --sidebar: #0f1b2d;
+  --sidebar-foreground: #e4eaf2;
+  --sidebar-accent: rgba(45, 212, 160, 0.16);
 }
 
 @layer base {

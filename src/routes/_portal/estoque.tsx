@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -21,15 +21,15 @@ import { mapaDeCores } from "@/lib/serie-cores";
 export const Route = createFileRoute("/_portal/estoque")({
   head: () => ({
     meta: [
-      { title: "Estoque — DX Vendas Delifrios" },
+      { title: "Estoque â€” DX Vendas Delifrios" },
       {
         name: "description",
-        content: "Capital em estoque, giro, ruptura e cobertura por produto na Delifrios.",
+        content: "Capital em estoque, giro, ruptura e cobertura por produto na operação.",
       },
-      { property: "og:title", content: "Estoque — DX Vendas Delifrios" },
+      { property: "og:title", content: "Estoque â€” DX Vendas Delifrios" },
       {
         property: "og:description",
-        content: "Capital, giro, ruptura e ação de compra por urgência.",
+        content: "Capital, giro, ruptura e aÃ§Ã£o de compra por urgÃªncia.",
       },
     ],
   }),
@@ -38,11 +38,11 @@ export const Route = createFileRoute("/_portal/estoque")({
 
 const FAIXAS: { faixa: FaixaEstoque; rotulo: string; cor: string }[] = [
   { faixa: "ruptura", rotulo: "Ruptura", cor: "#D03B3B" },
-  { faixa: "critico", rotulo: "Crítico", cor: "#EC835A" },
+  { faixa: "critico", rotulo: "CrÃ­tico", cor: "#EC835A" },
   { faixa: "excesso", rotulo: "Excesso", cor: "#2A78D6" },
   { faixa: "queimado", rotulo: "Queimado", cor: "#8A5B00" },
   { faixa: "sem giro", rotulo: "Sem giro", cor: "#8A847A" },
-  { faixa: "saudavel", rotulo: "Saudável", cor: "#0CA30C" },
+  { faixa: "saudavel", rotulo: "SaudÃ¡vel", cor: "#0CA30C" },
 ];
 const ORDEM: Record<string, number> = Object.fromEntries(FAIXAS.map((f, i) => [f.faixa, i]));
 const infoFaixa = (f: string) => FAIXAS.find((x) => x.faixa === f) ?? FAIXAS[FAIXAS.length - 1]!;
@@ -92,7 +92,7 @@ function EstoquePage() {
     const acc: Record<string, number> = {};
     for (const l of linhas) {
       if (l.data !== ultima) continue;
-      const n = l.fornecedor ?? "—";
+      const n = l.fornecedor ?? "â€”";
       acc[n] = (acc[n] ?? 0) + Number(l.capital ?? 0);
     }
     const ord = Object.entries(acc)
@@ -124,14 +124,14 @@ function EstoquePage() {
 
   const fornecedores = useMemo(
     () =>
-      Array.from(new Set((skus.data ?? []).map((s) => s.fornecedor ?? "—"))).sort((a, b) =>
+      Array.from(new Set((skus.data ?? []).map((s) => s.fornecedor ?? "â€”"))).sort((a, b) =>
         a.localeCompare(b),
       ),
     [skus.data],
   );
 
   const doFornecedor = useMemo(
-    () => (skus.data ?? []).filter((s) => !fornecedor || (s.fornecedor ?? "—") === fornecedor),
+    () => (skus.data ?? []).filter((s) => !fornecedor || (s.fornecedor ?? "â€”") === fornecedor),
     [skus.data, fornecedor],
   );
 
@@ -161,7 +161,7 @@ function EstoquePage() {
       }
     >();
     for (const l of linhas) {
-      const nome = l.fornecedor ?? "—";
+      const nome = l.fornecedor ?? "â€”";
       let g = m.get(nome);
       if (!g) {
         g = { nome, itens: [], perdida: 0, capital: 0, peso: 0, contagem: {} };
@@ -194,16 +194,16 @@ function EstoquePage() {
     {
       rotulo: "Curva",
       celula: (l) =>
-        l.curva ? <Badge cor={l.curva === "A" ? "#D03B3B" : "#7A746B"}>{l.curva}</Badge> : "—",
+        l.curva ? <Badge cor={l.curva === "A" ? "#D03B3B" : "#7A746B"}>{l.curva}</Badge> : "â€”",
     },
     {
-      rotulo: "Situação",
+      rotulo: "SituaÃ§Ã£o",
       celula: (l) => {
         const f = infoFaixa(l.faixa);
         const motivo =
           l.faixa === "queimado"
             ? l.dt_ult_entrada != null && l.margem_60d != null
-              ? `Sem compra desde ${ddmm(l.dt_ult_entrada)} · margem ${num(l.margem_60d, 1)}% em 60d`
+              ? `Sem compra desde ${ddmm(l.dt_ult_entrada)} Â· margem ${num(l.margem_60d, 1)}% em 60d`
               : "Queimado"
             : undefined;
         return (
@@ -218,7 +218,7 @@ function EstoquePage() {
     {
       rotulo: "Cobertura",
       direita: true,
-      celula: (l) => (l.cobertura == null ? "—" : `${num(l.cobertura)}d`),
+      celula: (l) => (l.cobertura == null ? "â€”" : `${num(l.cobertura)}d`),
     },
     { rotulo: "Dias rupt.", direita: true, celula: (l) => num(l.dias_rupt_mes) },
     {
@@ -249,7 +249,7 @@ function EstoquePage() {
     <>
       <Topbar
         titulo="Estoque"
-        descricao={`Capital, giro, ruptura e cobertura. Réguas: ativo = venda em 60 dias · crítico < 7 dias de cobertura · excesso > 45 dias. Foto do snapshot de ${ddmm(k?.data_snapshot)}.`}
+        descricao={`Capital, giro, ruptura e cobertura. RÃ©guas: ativo = venda em 60 dias Â· crÃ­tico < 7 dias de cobertura Â· excesso > 45 dias. Foto do snapshot de ${ddmm(k?.data_snapshot)}.`}
       />
 
       {kpis.isLoading ? (
@@ -260,21 +260,21 @@ function EstoquePage() {
             titulo="Capital em estoque"
             destaque
             valor={brl(k?.capital_hoje)}
-            detalhe={`média 30d ${brl(k?.estoque_medio_30d)}`}
+            detalhe={`mÃ©dia 30d ${brl(k?.estoque_medio_30d)}`}
           />
           <KpiCard
             titulo="Giro (30 dias)"
-            valor={`${num(k?.giro_30d, 1)}×`}
-            detalhe={`CMV ${brl(k?.cmv_30d)} ÷ estoque médio`}
+            valor={`${num(k?.giro_30d, 1)}Ã—`}
+            detalhe={`CMV ${brl(k?.cmv_30d)} Ã· estoque mÃ©dio`}
           />
           <KpiCard
-            titulo="Venda perdida por ruptura — mês"
+            titulo="Venda perdida por ruptura â€” mÃªs"
             valor={brl(ruptRs)}
             {...(ruptRs > 0 ? { status: "critico" as const } : {})}
-            detalhe={`${num(k?.skus_ruptura)} de ${num(k?.skus_ativos)} ativos zerados · ${num(k?.skus_queimados)} queimados fora da conta`}
+            detalhe={`${num(k?.skus_ruptura)} de ${num(k?.skus_ativos)} ativos zerados Â· ${num(k?.skus_queimados)} queimados fora da conta`}
           />
           <KpiCard
-            titulo="Cobertura crítica"
+            titulo="Cobertura crÃ­tica"
             ponto="#EC835A"
             valor={`${num(k?.skus_criticos)} SKUs`}
             detalhe="acabam antes de 7 dias"
@@ -291,10 +291,10 @@ function EstoquePage() {
             detalhe="com estoque e sem venda em 60d"
           />
           <KpiCard
-            titulo="Divergência lote × estoque"
+            titulo="DivergÃªncia lote Ã— estoque"
             valor={`${num(diverg)} SKUs`}
             {...(diverg > 0 ? { status: "critico" as const } : {})}
-            detalhe="alimenta o inventário rotativo"
+            detalhe="alimenta o inventÃ¡rio rotativo"
           />
           <Link to="/validade" className="block">
             <KpiCard
@@ -308,7 +308,7 @@ function EstoquePage() {
 
       <Cartao titulo="Capital em estoque, dia a dia" className="mt-6">
         <p className="-mt-3 mb-3 text-xs text-muted-foreground">
-          snapshot diário das 04:10 · R$ a custo
+          snapshot diÃ¡rio das 04:10 Â· R$ a custo
         </p>
         {capDia.isLoading ? (
           <Carregando />
@@ -334,7 +334,7 @@ function EstoquePage() {
           )}
         </Cartao>
 
-        <Cartao titulo="Curva ABC × situação">
+        <Cartao titulo="Curva ABC Ã— situaÃ§Ã£o">
           {skus.isLoading ? (
             <Carregando />
           ) : (
@@ -367,14 +367,14 @@ function EstoquePage() {
                 </tbody>
               </table>
               <p className="mt-3 text-xs text-muted-foreground">
-                Curva A em ruptura é emergência de compra; curva C em excesso é capital morto.
+                Curva A em ruptura Ã© emergÃªncia de compra; curva C em excesso Ã© capital morto.
               </p>
             </>
           )}
         </Cartao>
       </div>
 
-      <Cartao titulo="Ação de compra — por urgência e valor" className="mt-6">
+      <Cartao titulo="AÃ§Ã£o de compra â€” por urgÃªncia e valor" className="mt-6">
         <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap gap-2">
             {FAIXAS.map((f) => {
@@ -391,7 +391,7 @@ function EstoquePage() {
                     opacity: ativo || faixasSel.size === 0 ? 1 : 0.6,
                   }}
                 >
-                  {f.rotulo} · {num(contagem[f.faixa] ?? 0)}
+                  {f.rotulo} Â· {num(contagem[f.faixa] ?? 0)}
                 </button>
               );
             })}
@@ -450,7 +450,7 @@ function EstoquePage() {
                 },
               },
               {
-                rotulo: "Situação",
+                rotulo: "SituaÃ§Ã£o",
                 celula: (g) => (
                   <span className="hidden flex-wrap gap-1 md:flex">
                     {FAIXAS.filter((f) => g.contagem[f.faixa]).map((f) => (
@@ -475,14 +475,14 @@ function EstoquePage() {
             ]}
           />
         ) : (
-          <Vazio texto="Nenhum produto nas situações selecionadas." />
+          <Vazio texto="Nenhum produto nas situaÃ§Ãµes selecionadas." />
         )}
 
         <p className="mt-4 text-xs text-muted-foreground">
-          Velocidade = unidades por dia útil com estoque (35 dias). Venda perdida = velocidade ×
-          dias zerados no mês × preço praticado — é teto, não caixa: parte dos clientes substitui ou
-          espera. Queimado = sem compra há 60+ dias e margem abaixo de 5% — liquidação deliberada;
-          não conta como ruptura nem gera venda perdida.
+          Velocidade = unidades por dia Ãºtil com estoque (35 dias). Venda perdida = velocidade Ã—
+          dias zerados no mÃªs Ã— preÃ§o praticado â€” Ã© teto, nÃ£o caixa: parte dos clientes substitui ou
+          espera. Queimado = sem compra hÃ¡ 60+ dias e margem abaixo de 5% â€” liquidaÃ§Ã£o deliberada;
+          nÃ£o conta como ruptura nem gera venda perdida.
         </p>
       </Cartao>
     </>
