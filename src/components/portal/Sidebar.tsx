@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bot, Boxes, Home, ShoppingCart, Thermometer, LogOut, Menu, X } from "lucide-react";
+import { Bot, Boxes, Home, Milk, ShoppingCart, Thermometer, LogOut, Menu, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { Logo } from "./Logo";
@@ -11,6 +11,7 @@ const itens = [
   { to: "/estoque", codigo: "estoque", rotulo: "Estoque", icone: Boxes },
   { to: "/validade", codigo: "validade", rotulo: "Validade", icone: Thermometer },
   { to: "/analista", codigo: "analista", rotulo: "Analista", icone: Bot },
+  { to: "/danone", codigo: "danone", rotulo: "Danone", icone: Milk },
 ] as const;
 
 type Item = (typeof itens)[number];
