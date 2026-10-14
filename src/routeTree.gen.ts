@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PortalRouteImport } from './routes/_portal'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as PortalIndexRouteImport } from './routes/_portal/index'
 import { Route as PortalAnalistaRouteImport } from './routes/_portal/analista'
 import { Route as PortalEstoqueRouteImport } from './routes/_portal/estoque'
@@ -23,6 +24,11 @@ const PortalRoute = PortalRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
+  id: '/redefinir-senha',
+  path: '/redefinir-senha',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortalIndexRoute = PortalIndexRouteImport.update({
@@ -49,12 +55,14 @@ const PortalValidadeRoute = PortalValidadeRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof PortalIndexRoute
   '/login': typeof LoginRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/analista': typeof PortalAnalistaRoute
   '/estoque': typeof PortalEstoqueRoute
   '/validade': typeof PortalValidadeRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/analista': typeof PortalAnalistaRoute
   '/estoque': typeof PortalEstoqueRoute
   '/validade': typeof PortalValidadeRoute
@@ -64,6 +72,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_portal': typeof PortalRouteWithChildren
   '/login': typeof LoginRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/_portal/analista': typeof PortalAnalistaRoute
   '/_portal/estoque': typeof PortalEstoqueRoute
   '/_portal/validade': typeof PortalValidadeRoute
@@ -71,13 +80,16 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/analista' | '/estoque' | '/validade'
+  fullPaths:
+    '/' | '/login' | '/redefinir-senha' | '/analista' | '/estoque' | '/validade'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/analista' | '/estoque' | '/validade' | '/'
+  to:
+    '/login' | '/redefinir-senha' | '/analista' | '/estoque' | '/validade' | '/'
   id:
     | '__root__'
     | '/_portal'
     | '/login'
+    | '/redefinir-senha'
     | '/_portal/analista'
     | '/_portal/estoque'
     | '/_portal/validade'
@@ -87,6 +99,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   PortalRoute: typeof PortalRouteWithChildren
   LoginRoute: typeof LoginRoute
+  RedefinirSenhaRoute: typeof RedefinirSenhaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -103,6 +116,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/redefinir-senha': {
+      id: '/redefinir-senha'
+      path: '/redefinir-senha'
+      fullPath: '/redefinir-senha'
+      preLoaderRoute: typeof RedefinirSenhaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_portal/': {
@@ -156,6 +176,7 @@ const PortalRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   PortalRoute: PortalRouteWithChildren,
   LoginRoute: LoginRoute,
+  RedefinirSenhaRoute: RedefinirSenhaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
