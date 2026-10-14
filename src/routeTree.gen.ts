@@ -16,6 +16,7 @@ import { Route as PortalIndexRouteImport } from './routes/_portal/index'
 import { Route as PortalAnalistaRouteImport } from './routes/_portal/analista'
 import { Route as PortalEstoqueRouteImport } from './routes/_portal/estoque'
 import { Route as PortalValidadeRouteImport } from './routes/_portal/validade'
+import { Route as PortalVendasRouteImport } from './routes/_portal/vendas'
 
 const PortalRoute = PortalRouteImport.update({
   id: '/_portal',
@@ -51,6 +52,11 @@ const PortalValidadeRoute = PortalValidadeRouteImport.update({
   path: '/validade',
   getParentRoute: () => PortalRoute,
 } as any)
+const PortalVendasRoute = PortalVendasRouteImport.update({
+  id: '/vendas',
+  path: '/vendas',
+  getParentRoute: () => PortalRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PortalIndexRoute
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/analista': typeof PortalAnalistaRoute
   '/estoque': typeof PortalEstoqueRoute
   '/validade': typeof PortalValidadeRoute
+  '/vendas': typeof PortalVendasRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/analista': typeof PortalAnalistaRoute
   '/estoque': typeof PortalEstoqueRoute
   '/validade': typeof PortalValidadeRoute
+  '/vendas': typeof PortalVendasRoute
   '/': typeof PortalIndexRoute
 }
 export interface FileRoutesById {
@@ -76,15 +84,28 @@ export interface FileRoutesById {
   '/_portal/analista': typeof PortalAnalistaRoute
   '/_portal/estoque': typeof PortalEstoqueRoute
   '/_portal/validade': typeof PortalValidadeRoute
+  '/_portal/vendas': typeof PortalVendasRoute
   '/_portal/': typeof PortalIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/login' | '/redefinir-senha' | '/analista' | '/estoque' | '/validade'
+    | '/'
+    | '/login'
+    | '/redefinir-senha'
+    | '/analista'
+    | '/estoque'
+    | '/validade'
+    | '/vendas'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/login' | '/redefinir-senha' | '/analista' | '/estoque' | '/validade' | '/'
+    | '/login'
+    | '/redefinir-senha'
+    | '/analista'
+    | '/estoque'
+    | '/validade'
+    | '/vendas'
+    | '/'
   id:
     | '__root__'
     | '/_portal'
@@ -93,6 +114,7 @@ export interface FileRouteTypes {
     | '/_portal/analista'
     | '/_portal/estoque'
     | '/_portal/validade'
+    | '/_portal/vendas'
     | '/_portal/'
   fileRoutesById: FileRoutesById
 }
@@ -153,6 +175,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortalValidadeRouteImport
       parentRoute: typeof PortalRoute
     }
+    '/_portal/vendas': {
+      id: '/_portal/vendas'
+      path: '/vendas'
+      fullPath: '/vendas'
+      preLoaderRoute: typeof PortalVendasRouteImport
+      parentRoute: typeof PortalRoute
+    }
   }
 }
 
@@ -160,6 +189,7 @@ interface PortalRouteChildren {
   PortalAnalistaRoute: typeof PortalAnalistaRoute
   PortalEstoqueRoute: typeof PortalEstoqueRoute
   PortalValidadeRoute: typeof PortalValidadeRoute
+  PortalVendasRoute: typeof PortalVendasRoute
   PortalIndexRoute: typeof PortalIndexRoute
 }
 
@@ -167,6 +197,7 @@ const PortalRouteChildren: PortalRouteChildren = {
   PortalAnalistaRoute: PortalAnalistaRoute,
   PortalEstoqueRoute: PortalEstoqueRoute,
   PortalValidadeRoute: PortalValidadeRoute,
+  PortalVendasRoute: PortalVendasRoute,
   PortalIndexRoute: PortalIndexRoute,
 }
 

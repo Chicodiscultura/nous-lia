@@ -18,6 +18,7 @@ export function useMinhasAbas() {
 
 /** Mapa rota → código de aba, usado pela sidebar e pela guarda de rota. */
 export const CODIGO_POR_ROTA: { rota: string; codigo: string }[] = [
+  { rota: "/vendas", codigo: "vendas" },
   { rota: "/estoque", codigo: "estoque" },
   { rota: "/validade", codigo: "validade" },
   { rota: "/analista", codigo: "analista" },

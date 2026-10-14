@@ -1,4 +1,4 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -17,10 +17,10 @@ import { useTermometro } from "@/lib/validade";
 export const Route = createFileRoute("/_portal/analista")({
   head: () => ({
     meta: [
-      { title: "Analista de Compras â€” LIA Â· NOUS" },
+      { title: "Analista de Compras — LIA · NOUS" },
       {
         name: "description",
-        content: "SugestÃ£o de pedido por fornecedor, calculada pela IA e aprovada por uma pessoa.",
+        content: "Sugestão de pedido por fornecedor, calculada pela IA e aprovada por uma pessoa.",
       },
     ],
   }),
@@ -78,17 +78,17 @@ function AnalistaPage() {
       titulo: true,
       celula: (s) => <span className="font-semibold">{rotuloProduto(s.codprod, s.descricao)}</span>,
     },
-    { rotulo: "DisponÃ­vel", direita: true, celula: (s) => num(s.disponivel) },
+    { rotulo: "Disponível", direita: true, celula: (s) => num(s.disponivel) },
     {
       rotulo: "Reservado",
       direita: true,
-      dica: "Venda digitada que ainda nÃ£o foi faturada",
+      dica: "Venda digitada que ainda não foi faturada",
       celula: (s) => num(s.reservado),
     },
     {
       rotulo: "Descoberto",
       direita: true,
-      dica: "Pedido aberto alÃ©m do que existe em estoque (corte marcado)",
+      dica: "Pedido aberto além do que existe em estoque (corte marcado)",
       celula: (s) => num(s.descoberto),
     },
     {
@@ -100,10 +100,10 @@ function AnalistaPage() {
     {
       rotulo: "Rompe em",
       direita: true,
-      dica: "Dias atÃ© faltar produto",
+      dica: "Dias até faltar produto",
       celula: (s) =>
         s.dias_ruptura == null ? (
-          "â€”"
+          "—"
         ) : (
           <span
             style={{
@@ -121,7 +121,7 @@ function AnalistaPage() {
         ),
     },
     {
-      rotulo: "SugestÃ£o (cx)",
+      rotulo: "Sugestão (cx)",
       direita: true,
       dica: "Pedido sempre em caixa master",
       celula: (s) => <strong>{num(s.sugestao_cx)}</strong>,
@@ -132,7 +132,7 @@ function AnalistaPage() {
       rotulo: "Validade na chegada",
       direita: true,
       dica: "P25 medido da validade do lote na chegada, menos o prazo aceito pelo cliente",
-      celula: (s) => (s.p25_chegada == null ? "â€”" : `${num(s.p25_chegada)} d`),
+      celula: (s) => (s.p25_chegada == null ? "—" : `${num(s.p25_chegada)} d`),
     },
   ];
 
@@ -149,7 +149,7 @@ function AnalistaPage() {
         <Carregando />
       ) : !alerta ? (
         <Cartao>
-          <Vazio texto="O analista ainda nÃ£o gerou uma recomendaÃ§Ã£o. Ele roda de segunda a sÃ¡bado, no fim do expediente." />
+          <Vazio texto="O analista ainda não gerou uma recomendação. Ele roda de segunda a sábado, no fim do expediente." />
         </Cartao>
       ) : (
         <>
@@ -163,8 +163,8 @@ function AnalistaPage() {
           >
             <ShieldCheck className="mt-0.5 size-5 shrink-0" style={{ color: "var(--brand-red)" }} />
             <p>
-              <strong>Aguardando aprovaÃ§Ã£o.</strong> Nenhum pedido Ã© enviado ao portal do fabricante
-              sem o aval de uma pessoa: o analista sugere, a decisÃ£o Ã© humana.
+              <strong>Aguardando aprovação.</strong> Nenhum pedido é enviado ao portal do fabricante
+              sem o aval de uma pessoa: o analista sugere, a decisão é humana.
             </p>
           </div>
 
@@ -187,10 +187,10 @@ function AnalistaPage() {
             </div>
           ) : null}
 
-          <Cartao titulo={`${nomeFornec(alerta.codfornec)} â€” janela ${alerta.proxima_janela ?? "â€”"}`}>
-            <p className="text-sm leading-relaxed">{alerta.recomendacao ?? "â€”"}</p>
+          <Cartao titulo={`${nomeFornec(alerta.codfornec)} — janela ${alerta.proxima_janela ?? "—"}`}>
+            <p className="text-sm leading-relaxed">{alerta.recomendacao ?? "—"}</p>
             <p className="mt-2 text-xs text-muted-foreground">
-              AnÃ¡lise de {ddmmaaaa(alerta.data)} Â· prÃ³xima entrega {ddmmaaaa(alerta.proxima_entrega)}
+              Análise de {ddmmaaaa(alerta.data)} · próxima entrega {ddmmaaaa(alerta.proxima_entrega)}
             </p>
           </Cartao>
 
@@ -204,21 +204,21 @@ function AnalistaPage() {
             <KpiCard
               titulo="Perda projetada"
               valor={brl(alerta.perda_projetada)}
-              detalhe="a preÃ§o de compra, se nada for feito"
+              detalhe="a preço de compra, se nada for feito"
               status={Number(alerta.perda_projetada ?? 0) > 0 ? "critico" : "positivo"}
               destaque
             />
             <KpiCard
               titulo="Pedido sugerido"
               valor={`${num(alerta.kg_sugerido)} kg`}
-              detalhe={`MÃ­nimo ${num(alerta.minimo_kg)} kg Â· ${alerta.viavel ? "viÃ¡vel" : "inviÃ¡vel"}`}
+              detalhe={`Mínimo ${num(alerta.minimo_kg)} kg · ${alerta.viavel ? "viável" : "inviável"}`}
               status={alerta.viavel ? "positivo" : "atencao"}
               destaque
             />
             <KpiCard
               titulo="Pedido descoberto"
               valor={`${num(alerta.cortes_marcados)} un`}
-              detalhe="pedidos abertos alÃ©m do estoque"
+              detalhe="pedidos abertos além do estoque"
               destaque
             />
           </div>
@@ -232,16 +232,16 @@ function AnalistaPage() {
                   checked={soSugestao}
                   onChange={(e) => setSoSugestao(e.target.checked)}
                 />
-                SÃ³ com sugestÃ£o de compra
+                Só com sugestão de compra
               </label>
             }
           >
             <p className="mb-3 text-sm text-muted-foreground tabular">
-              {num(totais.itens)} itens Â· {num(totais.caixas)} caixas Â· {num(totais.kg)} kg Â·{" "}
+              {num(totais.itens)} itens · {num(totais.caixas)} caixas · {num(totais.kg)} kg ·{" "}
               <strong>{brl(totais.valor)}</strong>
             </p>
             {linhas.length === 0 ? (
-              <Vazio texto="Nenhum item com sugestÃ£o de compra." />
+              <Vazio texto="Nenhum item com sugestão de compra." />
             ) : (
               <Tabela
                 colunas={colunas}

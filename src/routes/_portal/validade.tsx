@@ -1,4 +1,4 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   ChevronDown,
   ChevronRight,
@@ -30,13 +30,13 @@ import {
 export const Route = createFileRoute("/_portal/validade")({
   head: () => ({
     meta: [
-      { title: "Validade â€” DX Vendas Delifrios" },
+      { title: "Validade — DX Vendas Delifrios" },
       {
         name: "description",
         content:
-          "TermÃ´metro de Validade: capital em risco por SKU e por lote, com painel da operaÃ§Ã£o Danone.",
+          "Termômetro de Validade: capital em risco por SKU e por lote, com painel da operação Danone.",
       },
-      { property: "og:title", content: "TermÃ´metro de Validade â€” DX Vendas" },
+      { property: "og:title", content: "Termômetro de Validade — DX Vendas" },
       {
         property: "og:description",
         content: "O estoque atual gira, no ritmo atual, antes de vencer?",
@@ -51,11 +51,11 @@ const COD_DANONE = 108;
 const COR_CRITICO = "#8B1E1E";
 
 const FAIXAS: { temperatura: Temperatura; rotulo: string; cor: string }[] = [
-  { temperatura: "CRITICO", rotulo: "CrÃ­tico", cor: COR_CRITICO },
+  { temperatura: "CRITICO", rotulo: "Crítico", cor: COR_CRITICO },
   { temperatura: "FERVENDO", rotulo: "Fervendo", cor: "#D03B3B" },
   { temperatura: "QUENTE", rotulo: "Quente", cor: "#EC7A2E" },
   { temperatura: "MORNO", rotulo: "Morno", cor: "#FAB219" },
-  { temperatura: "TEPIDO", rotulo: "TÃ©pido", cor: "#6FA8DC" },
+  { temperatura: "TEPIDO", rotulo: "Tépido", cor: "#6FA8DC" },
   { temperatura: "FRIO", rotulo: "Frio", cor: "#5FBF8A" },
   { temperatura: "SEM VALIDADE", rotulo: "Sem validade", cor: "#B9B4A9" },
 ];
@@ -81,7 +81,7 @@ function BadgeTemperatura({ t }: { t: Temperatura }) {
 /** Escada de desconto por validade do lote FIFO. */
 function BadgeAcao({ sku }: { sku: TermometroSku }) {
   const d = sku.desconto_pct;
-  if (d === null || d === undefined) return <span>â€”</span>;
+  if (d === null || d === undefined) return <span>—</span>;
   const cor = Number(d) >= 40 ? COR_CRITICO : "#EC7A2E";
   return (
     <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
@@ -89,7 +89,7 @@ function BadgeAcao({ sku }: { sku: TermometroSku }) {
         className="rounded-full px-2 py-0.5 text-xs font-bold"
         style={{ backgroundColor: `${cor}1A`, color: cor }}
       >
-        âˆ’{num(d, 0)}%
+        −{num(d, 0)}%
       </span>
       <span className="tabular">{brl(sku.preco_acao, true)}</span>
     </span>
@@ -122,7 +122,7 @@ function Kpis({ linhas }: { linhas: TermometroSku[] }) {
         detalhe={`${pct(estoque > 0 ? (risco / estoque) * 100 : 0)} do estoque`}
       />
       <KpiCard
-        titulo="Janela fechada (crÃ­tico)"
+        titulo="Janela fechada (crítico)"
         ponto={COR_CRITICO}
         status="critico"
         valor={`${num(janelaFechada.length)} SKUs`}
@@ -143,11 +143,11 @@ function Kpis({ linhas }: { linhas: TermometroSku[] }) {
         detalhe={`${brl(somar(quente, "vl_vence"))} em risco`}
       />
       <KpiCard
-        titulo="DivergÃªncias lote Ã— estoque"
+        titulo="Divergências lote × estoque"
         valor={`${num(divergentes.length)} SKUs`}
         detalhe={
-          <span title="conferir em inventÃ¡rio rotativo">
-            conferir em inventÃ¡rio rotativo
+          <span title="conferir em inventário rotativo">
+            conferir em inventário rotativo
           </span>
         }
       />
@@ -172,7 +172,7 @@ function Termometro({
   const algumaAtiva = selecionadas.size > 0;
 
   return (
-    <Cartao titulo="O termÃ´metro" className="mt-6">
+    <Cartao titulo="O termômetro" className="mt-6">
       <div className="flex h-8 w-full overflow-hidden rounded-lg">
         {dados.map((d) => {
           const largura = (d.valor / total) * 100;
@@ -182,7 +182,7 @@ function Termometro({
             <button
               key={d.temperatura}
               onClick={() => onAlternar(d.temperatura)}
-              title={`${d.rotulo}: ${d.skus} SKUs Â· ${brl(d.valor)}`}
+              title={`${d.rotulo}: ${d.skus} SKUs · ${brl(d.valor)}`}
               aria-pressed={ativo}
               className="h-full min-w-[4px] transition-opacity"
               style={{
@@ -217,7 +217,7 @@ function Termometro({
               />
               {d.rotulo}
               <span className="tabular">
-                {num(d.skus)} SKUs Â· {brl(d.valor)}
+                {num(d.skus)} SKUs · {brl(d.valor)}
               </span>
             </button>
           );
@@ -228,7 +228,7 @@ function Termometro({
 }
 
 
-/** Soma por chave, jÃ¡ que as views abrem por fornecedor. */
+/** Soma por chave, já que as views abrem por fornecedor. */
 function agregar<T>(
   linhas: T[],
   chave: (l: T) => string,
@@ -266,7 +266,7 @@ function GraficoSemanas(escopo: EscopoGrafico) {
       ) : barras.length ? (
         <GraficoBarras dados={barras} cores={cores} />
       ) : (
-        <Vazio texto="Nenhuma sobra projetada nas prÃ³ximas semanas." />
+        <Vazio texto="Nenhuma sobra projetada nas próximas semanas." />
       )}
     </Cartao>
   );
@@ -281,13 +281,13 @@ function GraficoTendencia(escopo: EscopoGrafico) {
   ).map(([data, valor]) => ({ data, valor }));
 
   return (
-    <Cartao titulo="TendÃªncia do capital em risco">
+    <Cartao titulo="Tendência do capital em risco">
       {historico.isLoading ? (
         <Carregando />
       ) : linha.length ? (
         <GraficoLinha dados={linha} />
       ) : (
-        <Vazio texto="HistÃ³rico ainda sendo formado." />
+        <Vazio texto="Histórico ainda sendo formado." />
       )}
     </Cartao>
   );
@@ -306,7 +306,7 @@ function LotesDoSku({ codprod }: { codprod: number }) {
   const lotes = useTermometroLotes(codprod);
   if (lotes.isLoading)
     return (
-      <p className="px-3 py-3 text-xs text-muted-foreground">Carregando lotesâ€¦</p>
+      <p className="px-3 py-3 text-xs text-muted-foreground">Carregando lotes…</p>
     );
   const linhas = lotes.data ?? [];
   if (!linhas.length)
@@ -341,10 +341,10 @@ function LotesDoSku({ codprod }: { codprod: number }) {
               style={critico(l) ? { color: "#D03B3B", fontWeight: 600 } : undefined}
             >
               <td className="py-1 pr-3">
-                {l.numlote ?? "â€”"}
+                {l.numlote ?? "—"}
                 {Number(l.dias_val ?? 999) <= 0 ? (
                   <span className="ml-2 inline-flex whitespace-nowrap rounded-full bg-[#3A3733] px-2 py-0.5 text-[10px] font-bold text-white">
-                    VENCIDO â€” baixa
+                    VENCIDO — baixa
                   </span>
                 ) : null}
               </td>
@@ -364,14 +364,14 @@ function LotesDoSku({ codprod }: { codprod: number }) {
   );
 }
 
-/** Lista de ataque: quem mais comprou o produto nos Ãºltimos 60 dias. */
+/** Lista de ataque: quem mais comprou o produto nos últimos 60 dias. */
 function CompradoresDoSku({ codprod }: { codprod: number }) {
   const compradores = useCompradoresProduto(codprod);
 
   if (compradores.isLoading)
     return (
       <p className="px-3 py-3 text-xs text-muted-foreground">
-        Carregando compradoresâ€¦
+        Carregando compradores…
       </p>
     );
 
@@ -379,14 +379,14 @@ function CompradoresDoSku({ codprod }: { codprod: number }) {
   if (!linhas.length)
     return (
       <p className="px-3 py-3 text-xs text-muted-foreground">
-        Nenhuma compra deste produto nos Ãºltimos 60 dias.
+        Nenhuma compra deste produto nos últimos 60 dias.
       </p>
     );
 
   return (
     <div className="rounded-lg bg-secondary/60 p-3">
       <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-        Quem compra este produto Â· Ãºltimos 60 dias
+        Quem compra este produto · últimos 60 dias
       </p>
       <table className="w-full text-xs">
         <thead>
@@ -396,7 +396,7 @@ function CompradoresDoSku({ codprod }: { codprod: number }) {
             <th className="py-1 pr-3">Vendedor</th>
             <th className="py-1 pr-3 text-right">Vezes</th>
             <th className="py-1 pr-3 text-right">Qt</th>
-            <th className="py-1 text-right">Ãšltima compra</th>
+            <th className="py-1 text-right">Última compra</th>
           </tr>
         </thead>
         <tbody>
@@ -405,9 +405,9 @@ function CompradoresDoSku({ codprod }: { codprod: number }) {
               key={`${c.codcli ?? "s"}-${c.codusur ?? "s"}-${i}`}
               className="border-t border-border/60"
             >
-              <td className="py-1 pr-3 font-semibold">{c.cliente ?? "â€”"}</td>
-              <td className="py-1 pr-3">{c.cidade ?? "â€”"}</td>
-              <td className="py-1 pr-3">{c.vendedor ?? "â€”"}</td>
+              <td className="py-1 pr-3 font-semibold">{c.cliente ?? "—"}</td>
+              <td className="py-1 pr-3">{c.cidade ?? "—"}</td>
+              <td className="py-1 pr-3">{c.vendedor ?? "—"}</td>
               <td className="py-1 pr-3 text-right tabular">{num(c.vezes, 0)}</td>
               <td className="py-1 pr-3 text-right tabular">{num(c.qt, 0)}</td>
               <td className="py-1 text-right tabular">
@@ -421,7 +421,7 @@ function CompradoresDoSku({ codprod }: { codprod: number }) {
   );
 }
 
-/** PrecificaÃ§Ã£o vinda da rotina 286 (Winthor). */
+/** Precificação vinda da rotina 286 (Winthor). */
 function Precificacao({ sku }: { sku: TermometroSku }) {
   const temEscada =
     sku.desconto_pct !== null && sku.desconto_pct !== undefined;
@@ -430,7 +430,7 @@ function Precificacao({ sku }: { sku: TermometroSku }) {
   return (
     <div className="rounded-lg bg-secondary/60 p-3">
       <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-        PrecificaÃ§Ã£o (rotina 286)
+        Precificação (rotina 286)
       </p>
       <div className="flex flex-wrap items-end gap-x-6 gap-y-3 text-xs">
         <div>
@@ -438,22 +438,22 @@ function Precificacao({ sku }: { sku: TermometroSku }) {
           <span className="tabular font-semibold">{brl(sku.custo, true)}</span>
         </div>
         <div>
-          <span className="block text-muted-foreground">PreÃ§o de tabela</span>
+          <span className="block text-muted-foreground">Preço de tabela</span>
           <span className="tabular font-semibold">{brl(sku.pvenda, true)}</span>
         </div>
         <div>
           <span className="block text-muted-foreground">Margem atual</span>
           <span className="tabular font-semibold">
             {sku.margem_tab === null || sku.margem_tab === undefined
-              ? "â€”"
+              ? "—"
               : pct(sku.margem_tab)}
           </span>
         </div>
         <div>
-          <span className="block text-muted-foreground">ICMS de saÃ­da</span>
+          <span className="block text-muted-foreground">ICMS de saída</span>
           <span className="tabular font-semibold">
             {sku.aliq_icms === null || sku.aliq_icms === undefined
-              ? "â€”"
+              ? "—"
               : Number(sku.aliq_icms) === 0
                 ? "0% (ST)"
                 : pct(sku.aliq_icms, 2)}
@@ -467,7 +467,7 @@ function Precificacao({ sku }: { sku: TermometroSku }) {
         </div>
         <div>
           <span className="block text-muted-foreground">
-            PreÃ§o margem zero
+            Preço margem zero
           </span>
           <span className="tabular text-sm font-semibold">
             {brl(sku.preco_margem_zero, true)}
@@ -476,7 +476,7 @@ function Precificacao({ sku }: { sku: TermometroSku }) {
         {temEscada ? (
           <div>
             <span className="block text-muted-foreground">
-              PreÃ§o da escada
+              Preço da escada
             </span>
             <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
               <span
@@ -486,7 +486,7 @@ function Precificacao({ sku }: { sku: TermometroSku }) {
                   color: corEscada,
                 }}
               >
-                âˆ’{num(sku.desconto_pct, 0)}%
+                −{num(sku.desconto_pct, 0)}%
               </span>
               <span className="tabular font-semibold">
                 {brl(sku.preco_acao, true)}
@@ -500,7 +500,7 @@ function Precificacao({ sku }: { sku: TermometroSku }) {
                 }
               >
                 {sku.margem_acao === null || sku.margem_acao === undefined
-                  ? "â€”"
+                  ? "—"
                   : pct(sku.margem_acao, 2)}
               </span>
             </span>
@@ -508,9 +508,9 @@ function Precificacao({ sku }: { sku: TermometroSku }) {
         ) : null}
       </div>
       <p className="mt-2 text-[11px] text-muted-foreground">
-        Margem zero = custo Ã· (1 âˆ’ ICMS âˆ’ PIS/COFINS). ICMS da tributaÃ§Ã£o de
-        saÃ­da; PIS/COFINS Ã© o efetivo medido nas notas dos Ãºltimos 35 dias (o
-        cadastro do Winthor nÃ£o traz a alÃ­quota).
+        Margem zero = custo ÷ (1 − ICMS − PIS/COFINS). ICMS da tributação de
+        saída; PIS/COFINS é o efetivo medido nas notas dos últimos 35 dias (o
+        cadastro do Winthor não traz a alíquota).
       </p>
     </div>
   );
@@ -594,12 +594,12 @@ function TabelaSkus({
       titulo: true,
       celula: (l) => rotuloProduto(l.codprod, l.descricao),
     },
-    { rotulo: "Fornecedor", celula: (l) => l.fornecedor ?? "â€”" },
+    { rotulo: "Fornecedor", celula: (l) => l.fornecedor ?? "—" },
     { rotulo: "Reserv.", direita: true, celula: (l) => num(l.qt_reservada, 0) },
     {
       rotulo: "Disp.",
       direita: true,
-      dica: "estoque de fato em risco â€” o risco Ã© calculado sobre ele",
+      dica: "estoque de fato em risco — o risco é calculado sobre ele",
       celula: (l) => num(l.disp, 0),
     },
     { rotulo: "Vel. (un/dia)", direita: true, celula: (l) => num(l.vel, 2) },
@@ -608,7 +608,7 @@ function TabelaSkus({
       direita: true,
       celula: (l) =>
         l.cobertura === null || l.cobertura === undefined
-          ? "â€”"
+          ? "—"
           : `${num(l.cobertura, 0)}d`,
     },
     {
@@ -623,11 +623,11 @@ function TabelaSkus({
             </span>
           </span>
         ) : (
-          "â€”"
+          "—"
         ),
     },
     {
-      rotulo: "Qt crÃ­tico",
+      rotulo: "Qt crítico",
       direita: true,
       celula: (l) =>
         Number(l.qt_critico ?? 0) > 0 ? (
@@ -644,16 +644,16 @@ function TabelaSkus({
     ...(temEscada
       ? ([
           {
-            rotulo: "AÃ§Ã£o",
+            rotulo: "Ação",
             direita: true,
             celula: (l) => <BadgeAcao sku={l} />,
           },
           {
-            rotulo: "Mg aÃ§Ã£o",
+            rotulo: "Mg ação",
             direita: true,
             celula: (l) =>
               l.desconto_pct === null || l.desconto_pct === undefined ? (
-                "â€”"
+                "—"
               ) : (
                 <span
                   className="tabular"
@@ -677,7 +677,7 @@ function TabelaSkus({
         <input
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
-          placeholder="Buscar produtoâ€¦"
+          placeholder="Buscar produto…"
           aria-label="Buscar produto"
           className="min-h-[44px] min-w-[200px] flex-1 rounded-lg border border-border bg-card px-3 text-[13px]"
         />
@@ -697,8 +697,8 @@ function TabelaSkus({
                 }}
               >
                 {unica
-                  ? `${unica.rotulo} Â· limpar filtro`
-                  : `${temperaturas.size} faixas Â· limpar filtro`}
+                  ? `${unica.rotulo} · limpar filtro`
+                  : `${temperaturas.size} faixas · limpar filtro`}
               </button>
             );
           })()
@@ -748,7 +748,7 @@ function PainelDanone({
       { categoria: string; estoque: number; risco: number; fervendo: number }
     > = {};
     for (const l of danone) {
-      const chave = `${l.codcategoria ?? "â€”"} ${l.categoria ?? "Sem categoria"}`;
+      const chave = `${l.codcategoria ?? "—"} ${l.categoria ?? "Sem categoria"}`;
       acc[chave] ??= { categoria: chave, estoque: 0, risco: 0, fervendo: 0 };
       acc[chave]!.estoque += Number(l.vl_estoque ?? 0);
       acc[chave]!.risco += Number(l.vl_vence ?? 0);
@@ -768,8 +768,8 @@ function PainelDanone({
       titulo: true,
       celula: (l) => rotuloProduto(l.codprod, l.descricao),
     },
-    { rotulo: "Categoria", celula: (l) => l.categoria ?? "â€”" },
-    { rotulo: "Lote", celula: (l) => l.numlote ?? "â€”" },
+    { rotulo: "Categoria", celula: (l) => l.categoria ?? "—" },
+    { rotulo: "Lote", celula: (l) => l.numlote ?? "—" },
     { rotulo: "Qt", direita: true, celula: (l) => num(l.qt, 0) },
     {
       rotulo: "Validade",
@@ -798,7 +798,7 @@ function PainelDanone({
       },
     },
     {
-      rotulo: "SaÃ­da 7d",
+      rotulo: "Saída 7d",
       direita: true,
       celula: (l) => num(l.qt_7d ?? 0, 0),
     },
@@ -833,18 +833,18 @@ function PainelDanone({
             style={{ color: COR_CRITICO }}
           />
           <span>
-            Janela comercial fechada em {num(criticos.length)} SKUs â€”{" "}
-            {brl(vlCritico)} a custo. O cliente nÃ£o aceita produto a menos de 15
-            dias do vencimento; aÃ§Ã£o fora da tabela.
+            Janela comercial fechada em {num(criticos.length)} SKUs —{" "}
+            {brl(vlCritico)} a custo. O cliente não aceita produto a menos de 15
+            dias do vencimento; ação fora da tabela.
           </span>
         </div>
       ) : null}
 
       <Cartao
-        titulo="OperaÃ§Ã£o Danone"
+        titulo="Operação Danone"
         acao={
           <span className="text-xs text-muted-foreground">
-            Shelf-life curto Â· fornecedor {COD_DANONE}
+            Shelf-life curto · fornecedor {COD_DANONE}
           </span>
         }
       >
@@ -878,7 +878,7 @@ function PainelDanone({
                       {brl(c.estoque)}
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground tabular">
-                      {brl(c.risco)} em risco Â· {num(c.fervendo)} SKUs fervendo
+                      {brl(c.risco)} em risco · {num(c.fervendo)} SKUs fervendo
                     </p>
                   </div>
                 ))}
@@ -900,15 +900,15 @@ function PainelDanone({
         acao={
           <span className="rounded-full bg-secondary px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
             {minutos === null
-              ? "sem sincronizaÃ§Ã£o"
-              : `atualizado hÃ¡ ${num(minutos)} min`}
+              ? "sem sincronização"
+              : `atualizado há ${num(minutos)} min`}
           </span>
         }
       >
         {escada.total ? (
           <p className="mb-3 text-[13px] text-muted-foreground">
             <span className="font-semibold text-foreground">Escada ativa:</span>{" "}
-            {num(escada.vinte)} SKUs a âˆ’20%, {num(escada.quarenta)} SKUs a âˆ’40% (
+            {num(escada.vinte)} SKUs a −20%, {num(escada.quarenta)} SKUs a −40% (
             {brl(escada.valor)} de estoque)
           </p>
         ) : null}
@@ -941,19 +941,19 @@ function Metodologia() {
         ) : (
           <ChevronRight className="size-4" />
         )}
-        Como este nÃºmero Ã© calculado
+        Como este número é calculado
       </button>
       {aberto ? (
         <p className="mt-2 max-w-3xl text-xs leading-relaxed text-muted-foreground">
-          Velocidade medida por dia Ãºtil COM estoque (demanda censurada). ProjeÃ§Ã£o
-          segâ€“sÃ¡b (domingo nÃ£o fatura), sÃ¡bado com o peso medido, ponderada pelo
+          Velocidade medida por dia útil COM estoque (demanda censurada). Projeção
+          seg–sáb (domingo não fatura), sábado com o peso medido, ponderada pelo
           peso real de cada dia da semana na venda do fornecedor. Fornecedor com
-          rÃ©gua comercial (Danone: 15 dias) tem a sobra medida contra o limite de
-          aceite do cliente, nÃ£o contra a validade â€” lote com janela fechada Ã©
-          crÃ­tico inteiro. Escada de desconto automÃ¡tica vale para a Danone: 10
-          dias â†’ âˆ’20%, 5 dias â†’ âˆ’40%; produto vencido nÃ£o entra â€” Ã© baixa. Demais
-          fornecedores: desconto manual, simulado na prÃ³pria linha. Snapshot diÃ¡rio
-          ~01:10 (Bahia); lotes ao vivo a cada 15 min. O termÃ´metro se recalibra
+          régua comercial (Danone: 15 dias) tem a sobra medida contra o limite de
+          aceite do cliente, não contra a validade — lote com janela fechada é
+          crítico inteiro. Escada de desconto automática vale para a Danone: 10
+          dias → −20%, 5 dias → −40%; produto vencido não entra — é baixa. Demais
+          fornecedores: desconto manual, simulado na própria linha. Snapshot diário
+          ~01:10 (Bahia); lotes ao vivo a cada 15 min. O termômetro se recalibra
           sozinho: ritmo novo, entrada nova ou validade nova mudam a classe no dia
           seguinte.
         </p>
@@ -1009,7 +1009,7 @@ function ValidadePage() {
   if (termometro.isLoading) {
     return (
       <>
-        <Topbar titulo="TermÃ´metro de Validade" />
+        <Topbar titulo="Termômetro de Validade" />
         <Carregando />
       </>
     );
@@ -1018,12 +1018,12 @@ function ValidadePage() {
   if (!linhas.length) {
     return (
       <>
-        <Topbar titulo="TermÃ´metro de Validade" />
+        <Topbar titulo="Termômetro de Validade" />
         <div className="mx-auto max-w-md rounded-xl border border-border bg-card p-6 text-center">
           <CircleAlert className="mx-auto size-6" style={{ color: "var(--brand-red)" }} />
           <h2 className="mt-3 text-lg font-extrabold">Sem dados de validade</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            NÃ£o hÃ¡ snapshot disponÃ­vel para o seu perfil. Fale com a diretoria se
+            Não há snapshot disponível para o seu perfil. Fale com a diretoria se
             precisar de acesso.
           </p>
         </div>
@@ -1034,11 +1034,11 @@ function ValidadePage() {
   return (
     <>
       <Topbar
-        titulo="TermÃ´metro de Validade"
+        titulo="Termômetro de Validade"
         descricao={
           fornecedor
-            ? `Snapshot de ${ddmmaaaa(dataSnapshot)} â€” fornecedor ${fornecedor}`
-            : `Snapshot de ${ddmmaaaa(dataSnapshot)} â€” o estoque atual gira, no ritmo atual, antes de vencer?`
+            ? `Snapshot de ${ddmmaaaa(dataSnapshot)} — fornecedor ${fornecedor}`
+            : `Snapshot de ${ddmmaaaa(dataSnapshot)} — o estoque atual gira, no ritmo atual, antes de vencer?`
         }
       />
 
@@ -1050,8 +1050,8 @@ function ValidadePage() {
         >
           <TriangleAlert className="mt-0.5 size-4 shrink-0" style={{ color: "#FAB219" }} />
           <span>
-            O snapshot exibido Ã© de {ddmmaaaa(dataSnapshot)} â€” a apuraÃ§Ã£o de hoje ainda
-            nÃ£o rodou.
+            O snapshot exibido é de {ddmmaaaa(dataSnapshot)} — a apuração de hoje ainda
+            não rodou.
           </span>
         </div>
       ) : null}
@@ -1099,7 +1099,7 @@ function ValidadePage() {
                 onClick={() => setFornecedor("")}
                 className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-border px-3 text-xs font-semibold"
               >
-                {fornecedor} Â· limpar
+                {fornecedor} · limpar
               </button>
             ) : null}
           </>

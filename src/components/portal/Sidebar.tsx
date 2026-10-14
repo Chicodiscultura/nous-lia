@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bot, Boxes, Home, Thermometer, LogOut, Menu, X } from "lucide-react";
+import { Bot, Boxes, Home, ShoppingCart, Thermometer, LogOut, Menu, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { Logo } from "./Logo";
