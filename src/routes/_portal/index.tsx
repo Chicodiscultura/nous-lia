@@ -9,6 +9,7 @@ import { useSessao, usePerfil } from "@/hooks/useSessao";
 import { useCompradorAlertas } from "@/lib/analista";
 import { useEstoqueKpis, useEstoqueSkus } from "@/lib/estoque";
 import { brl, ddmm, num, pct } from "@/lib/format";
+import { useGmroi } from "@/lib/gmroi";
 import { useTermometro } from "@/lib/validade";
 
 export const Route = createFileRoute("/_portal/")({
@@ -40,7 +41,67 @@ interface Alerta {
   to: "/estoque" | "/validade" | "/analista";
 }
 
+/** Indicador principal: valor grande, definição curta e barra de progresso até a meta (se houver). */
+function IndicadorMeta({
+  titulo,
+  valor,
+  unidade,
+  meta,
+  atual,
+  cor,
+  linhas,
+  ajuda,
+}: {
+  titulo: string;
+  valor: string;
+  unidade?: string;
+  /** Meta na mesma escala de `atual`; null = ainda não definida. */
+  meta: number | null;
+  atual: number | null;
+  cor: string;
+  linhas: string[];
+  ajuda: string;
+}) {
+  const progresso = meta && atual != null ? Math.max(0, Math.min(100, (atual / meta) * 100)) : null;
+  return (
+    <div className="card-surface p-4 sm:p-5" style={{ borderTop: `3px solid ${cor}` }}>
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground sm:text-xs">
+        {titulo}
+      </p>
+      <p
+        className="mt-2 flex items-baseline gap-2 text-3xl font-extrabold leading-none tabular sm:text-4xl"
+        style={{ fontFamily: "var(--font-display)", color: cor }}
+      >
+        {valor}
+        {unidade ? <span className="text-base font-bold text-muted-foreground">{unidade}</span> : null}
+      </p>
+
+      <div className="mt-3">
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <span>{meta != null ? `Meta ${num(meta, meta % 1 === 0 ? 0 : 1)}${unidade === "%" ? "%" : ""}` : "Meta ainda não definida"}</span>
+          {progresso != null ? <span className="tabular">{num(progresso, 0)}% da meta</span> : null}
+        </div>
+        <div className="mt-1 h-2 overflow-hidden rounded-full bg-muted" aria-hidden>
+          <div
+            className="h-full rounded-full"
+            style={{ width: `${progresso ?? 0}%`, backgroundColor: cor }}
+          />
+        </div>
+      </div>
+
+      <ul className="mt-3 space-y-0.5 text-xs text-muted-foreground tabular">
+        {linhas.map((l) => (
+          <li key={l}>{l}</li>
+        ))}
+      </ul>
+      <p className="mt-3 border-t pt-2 text-[11px] leading-snug text-muted-foreground">{ajuda}</p>
+    </div>
+  );
+}
+
 function Inicio() {
+  const gmroi = useGmroi();
+  const g = gmroi.data;
   const { session } = useSessao();
   const { data: perfil } = usePerfil(session?.user.email ?? undefined);
   const kpis = useEstoqueKpis();
@@ -135,7 +196,43 @@ function Inicio() {
         <Carregando />
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <div className="grid gap-3 md:grid-cols-2">
+            <IndicadorMeta
+              titulo="GMROI · retorno da margem sobre o estoque"
+              valor={g?.gmroi_anualizado == null ? "—" : `${num(g.gmroi_anualizado, 2)}×`}
+              meta={g?.meta_gmroi_anual ?? null}
+              atual={g?.gmroi_anualizado ?? null}
+              cor="var(--brand-red)"
+              linhas={[
+                `${num(g?.gmroi_30d, 2)}× no mês · margem bruta ${pct(g?.margem_pct)}`,
+                `Margem ${brl(g?.margem_30d)} ÷ estoque médio ${brl(g?.estoque_medio_30d)}`,
+              ]}
+              ajuda="Cada R$ 1 investido em estoque devolve este valor em margem bruta por ano (últimos 30 dias, anualizado)."
+            />
+            <IndicadorMeta
+              titulo="Eficiência do capital"
+              valor={eficiencia.valor == null ? "—" : num(eficiencia.valor, 1)}
+              unidade="%"
+              meta={g?.meta_eficiencia_pct ?? null}
+              atual={eficiencia.valor}
+              cor={
+                eficiencia.valor == null || g?.meta_eficiencia_pct == null
+                  ? "var(--brand-red)"
+                  : eficiencia.valor >= g.meta_eficiencia_pct
+                    ? "var(--positive-text)"
+                    : eficiencia.valor >= g.meta_eficiencia_pct - 10
+                      ? "var(--warning)"
+                      : "var(--severe)"
+              }
+              linhas={[
+                `Girando ${brl(eficiencia.produtivo)}`,
+                `Parado ${brl(eficiencia.improdutivo)} (excesso, sem giro e queimado)`,
+              ]}
+              ajuda="Parcela do capital em estoque que está girando. Subir este número cortando estoque pode gerar ruptura: leia junto com a venda perdida."
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <KpiCard
               titulo="Capital em estoque"
               valor={brl(k?.capital_hoje)}
@@ -145,7 +242,7 @@ function Inicio() {
             <KpiCard
               titulo="Venda perdida no mês"
               valor={brl(k?.ruptura_rs_mes)}
-              detalhe={`${num(k?.skus_ruptura)} SKUs em ruptura`}
+              detalhe={`${num(k?.skus_ruptura)} SKUs em ruptura · trava da eficiência`}
               status={Number(k?.ruptura_rs_mes ?? 0) > 0 ? "critico" : "positivo"}
               destaque
             />
@@ -154,19 +251,6 @@ function Inicio() {
               valor={brl(validade.vence + validade.critico)}
               detalhe={`${pct(validade.pctRisco)} do estoque a custo`}
               status={validade.pctRisco > 5 ? "grave" : "atencao"}
-              destaque
-            />
-            <KpiCard
-              titulo="Eficiência do capital"
-              valor={eficiencia.valor == null ? "—" : pct(eficiencia.valor)}
-              detalhe="do capital está girando"
-              status={
-                eficiencia.valor != null && eficiencia.valor >= 80
-                  ? "positivo"
-                  : eficiencia.valor != null && eficiencia.valor >= 60
-                    ? "atencao"
-                    : "grave"
-              }
               destaque
             />
           </div>
@@ -202,8 +286,9 @@ function Inicio() {
           </Cartao>
 
           <p className="text-xs text-muted-foreground">
-            Eficiência do capital = capital em SKUs saudáveis ou em cobertura crítica ÷ capital total
-            (exclui excesso, sem giro e queimado). Indicador da v1, sujeito à calibração com a operação.
+            GMROI = margem bruta de 30 dias ÷ estoque médio a custo de 30 dias, × 365/30. Eficiência do
+            capital = capital em SKUs saudáveis ou em cobertura crítica ÷ (esse capital + excesso, sem
+            giro e queimado). Metas ficam em parâmetros editáveis; o GMROI ainda não tem meta definida.
           </p>
         </>
       )}
