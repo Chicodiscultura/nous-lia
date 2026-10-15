@@ -40,6 +40,40 @@ export interface CompradorSku {
   janela_vendavel: number | null;
 }
 
+/** Uma linha por (pedido, SKU) ainda em trânsito: já pedido ao fabricante e não recebido. */
+export interface CompradorPedido {
+  pedido: string;
+  data_pedido: string;
+  janela: string | null;
+  data_prevista: string;
+  codfornec: number;
+  codprod: number;
+  descricao: string | null;
+  caixas: number;
+  un: number;
+  kg_bruto: number | null;
+  vl_compra: number | null;
+  caixas_cortadas: number;
+  un_cortada: number;
+  caixas_liquidas: number;
+  un_liquida: number;
+  kg_liquido: number | null;
+  vl_liquido: number | null;
+  status: string;
+  fonte: string | null;
+  atualizado_em: string;
+}
+
+export const useCompradorPedidos = () =>
+  useQuery({
+    queryKey: ["v_comprador_pedido"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("v_comprador_pedido").select("*");
+      if (error) throw error;
+      return (data ?? []) as CompradorPedido[];
+    },
+  });
+
 export const useCompradorAlertas = () =>
   useQuery({
     queryKey: ["v_comprador_alerta"],

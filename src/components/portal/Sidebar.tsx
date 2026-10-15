@@ -1,8 +1,20 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bot, Boxes, Home, Milk, ShoppingCart, Thermometer, LogOut, Menu, X } from "lucide-react";
+import {
+  Bot,
+  Boxes,
+  Home,
+  Milk,
+  Settings,
+  ShoppingCart,
+  Thermometer,
+  LogOut,
+  Menu,
+  X,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { Logo, Simbolo } from "./Logo";
+import { MarcaCliente } from "./MarcaCliente";
 import { supabase } from "@/lib/supabase";
 import { useMinhasAbas } from "@/lib/abas";
 
@@ -12,6 +24,7 @@ const itens = [
   { to: "/validade", codigo: "validade", rotulo: "Validade", icone: Thermometer },
   { to: "/analista", codigo: "analista", rotulo: "Analista", icone: Bot },
   { to: "/danone", codigo: "danone", rotulo: "Danone", icone: Milk },
+  { to: "/admin", codigo: "admin", rotulo: "Admin", icone: Settings },
 ] as const;
 
 type Item = (typeof itens)[number];
@@ -42,6 +55,7 @@ function Navegacao({
             style={{
               backgroundColor: ativo ? "var(--sidebar-accent)" : "transparent",
               color: ativo ? "var(--on-ink)" : "var(--sidebar-foreground)",
+              boxShadow: ativo ? "inset 3px 0 0 var(--brasa)" : "none",
             }}
           >
             <Icone className="size-4 shrink-0" />
@@ -101,6 +115,9 @@ export function Sidebar() {
           <Menu className="size-5" />
         </button>
         <Logo escuro />
+        <div className="ml-auto">
+          <MarcaCliente variante="icone" />
+        </div>
       </div>
 
       {/* Drawer mobile */}
@@ -125,6 +142,7 @@ export function Sidebar() {
                 <X className="size-5" />
               </button>
             </div>
+            <MarcaCliente variante="completo" />
             <Navegacao
               pathname={pathname}
               onNavegar={() => setAberto(false)}
@@ -142,11 +160,15 @@ export function Sidebar() {
         className="fixed inset-y-0 left-0 z-30 hidden w-[68px] flex-col md:flex xl:w-[220px]"
         style={fundo}
       >
-        <div className="hidden px-4 py-5 xl:block">
+        <div className="hidden px-4 pb-3 pt-5 xl:block">
           <Logo escuro />
         </div>
-        <div className="flex justify-center py-5 xl:hidden">
-          <Simbolo tamanho={32} escuro />
+        <div className="hidden xl:block">
+          <MarcaCliente variante="completo" />
+        </div>
+        <div className="flex flex-col items-center gap-3 py-5 xl:hidden">
+          <Simbolo tamanho={30} escuro />
+          <MarcaCliente variante="icone" />
         </div>
         <Navegacao pathname={pathname} compacto visiveis={visiveis} />
         <Sair compacto />

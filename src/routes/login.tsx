@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-import { Logo } from "@/components/portal/Logo";
+import { Logo, Simbolo } from "@/components/portal/Logo";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/login")({
@@ -58,8 +58,9 @@ function LoginPage() {
       style={{ backgroundColor: "var(--background)" }}
     >
       <div className="w-full max-w-sm">
-        <div className="mb-6 flex justify-center p-4">
-          <Logo />
+        <div className="mb-6 flex flex-col items-center gap-4 p-4">
+          <Simbolo tamanho={56} animado />
+          <Logo animado />
         </div>
 
         <form onSubmit={entrar} className="card-surface space-y-4 p-6">

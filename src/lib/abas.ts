@@ -23,6 +23,7 @@ export const CODIGO_POR_ROTA: { rota: string; codigo: string }[] = [
   { rota: "/validade", codigo: "validade" },
   { rota: "/analista", codigo: "analista" },
   { rota: "/danone", codigo: "danone" },
+  { rota: "/admin", codigo: "admin" },
 ];
 
 /** Código da aba correspondente ao pathname atual ("/" → home). */

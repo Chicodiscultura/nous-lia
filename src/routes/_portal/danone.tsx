@@ -188,11 +188,125 @@ function DanonePage() {
   return (
     <>
       <TopbarMes
-        titulo="Programas Danone"
+        titulo="Danone"
         descricao={rotuloMes(mes)}
         mes={mes}
         onMes={setMes}
       />
+
+      {/* Parte 1 — Operação */}
+      <header className="mb-4 border-b pb-2">
+        <h2 className="text-lg font-extrabold">Operação Danone</h2>
+        <p className="text-sm text-muted-foreground">
+          Vendas, faturamento, distribuição numérica e infaltáveis, mês a mês.
+        </p>
+      </header>
+
+      <h3 className="mb-3 text-base font-extrabold">
+        Operação mês a mês — Vendas (pedidos)
+      </h3>
+      <CardsOperacao atual={atualVendas} />
+      <p className="mb-6 mt-2 text-xs text-muted-foreground">
+        Base: pedidos digitados na data do pedido (compara com a rotina 322;
+        exclui itens fora do programa).
+      </p>
+
+      <div className="mb-6">
+        <KpiCard
+          titulo="A faturar no mês"
+          valor={brl(aFaturar)}
+          detalhe={`${num(pdvsAguardando)} PDVs aguardando faturamento`}
+          destaque
+          {...(aFaturar > 0 ? { status: "atencao" as const } : {})}
+        />
+      </div>
+
+      <h3 className="mb-3 text-base font-extrabold">
+        Operação mês a mês — Faturado (NF emitida)
+      </h3>
+      <CardsOperacao atual={atual} />
+      <p className="mb-6 mt-2 text-xs text-muted-foreground">
+        Base: notas emitidas (régua do P4P e da apuração MTRIX).
+      </p>
+
+      <Cartao
+        titulo="Toneladas por categoria"
+        acao={<SeletorBase base={base} onBase={setBase} />}
+        className="mb-6"
+      >
+        {carregandoGraficos ? (
+          <Carregando />
+        ) : chavesMes.length ? (
+          <ResponsiveContainer width="100%" height={pequena ? 240 : 320}>
+            <BarChart
+              data={dadosBarras}
+              margin={{ top: 8, right: 8, bottom: 4, left: 0 }}
+              barGap={2}
+              barCategoryGap="30%"
+            >
+              <CartesianGrid vertical={false} stroke="#E7E4DC" />
+              <XAxis
+                dataKey="categoria"
+                tickLine={false}
+                axisLine={false}
+                tick={{ fill: "#7A746B", fontSize: pequena ? 10 : 12 }}
+              />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                width={pequena ? 36 : 56}
+                tick={{ fill: "#7A746B", fontSize: pequena ? 10 : 12 }}
+              />
+              <Tooltip
+                formatter={(v: number) => `${num(v, 2)} t`}
+                contentStyle={{
+                  borderRadius: 12,
+                  border: "1px solid #E7E4DC",
+                  fontFamily: "Inter, sans-serif",
+                }}
+              />
+              <Legend wrapperStyle={{ fontSize: 12 }} />
+              {chavesMes.map((m, i) => (
+                <Bar
+                  key={m}
+                  dataKey={m}
+                  fill={CORES_SERIE[i % CORES_SERIE.length]}
+                  radius={[4, 4, 0, 0]}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <Vazio />
+        )}
+      </Cartao>
+
+
+      <Cartao
+        titulo="Distribuição numérica (DN) por mês"
+        acao={<SeletorBase base={base} onBase={setBase} />}
+        className="mb-6"
+      >
+        {carregandoGraficos ? (
+          <Carregando />
+        ) : dadosLinha.length ? (
+          <GraficoLinha
+            dados={dadosLinha}
+            cor={CORES_SERIE[0]}
+            segundaSerie={{ chave: "comparativo", nome: "DN YoPro", cor: CORES_SERIE[3] }}
+          />
+        ) : (
+          <Vazio />
+        )}
+      </Cartao>
+
+      {/* Parte 2 — Programas */}
+      <header className="mb-4 mt-10 border-b pb-2">
+        <h2 className="text-lg font-extrabold">Programas Danone</h2>
+        <p className="text-sm text-muted-foreground">
+          Pay for Performance (P4P) e Programa Master, apurados sobre a operação acima.
+        </p>
+      </header>
 
       {/* Seção A — P4P */}
       <Cartao titulo="Pay for Performance (P4P)" className="mb-6">
@@ -268,105 +382,6 @@ function DanonePage() {
           Apuração no nível distribuidor. DN só premia se algum bloco de
           tonelagem fechar ≥100% no mês. Atingimento capado em 115%.
         </p>
-      </Cartao>
-
-      {/* Seção B — Operação */}
-      <h2 className="mb-3 text-base font-extrabold">
-        Operação mês a mês — Vendas (pedidos)
-      </h2>
-      <CardsOperacao atual={atualVendas} />
-      <p className="mb-6 mt-2 text-xs text-muted-foreground">
-        Base: pedidos digitados na data do pedido (compara com a rotina 322;
-        exclui itens fora do programa).
-      </p>
-
-      <div className="mb-6">
-        <KpiCard
-          titulo="A faturar no mês"
-          valor={brl(aFaturar)}
-          detalhe={`${num(pdvsAguardando)} PDVs aguardando faturamento`}
-          destaque
-          {...(aFaturar > 0 ? { status: "atencao" as const } : {})}
-        />
-      </div>
-
-      <h2 className="mb-3 text-base font-extrabold">
-        Operação mês a mês — Faturado (NF emitida)
-      </h2>
-      <CardsOperacao atual={atual} />
-      <p className="mb-6 mt-2 text-xs text-muted-foreground">
-        Base: notas emitidas (régua do P4P e da apuração MTRIX).
-      </p>
-
-      <Cartao
-        titulo="Toneladas por categoria"
-        acao={<SeletorBase base={base} onBase={setBase} />}
-        className="mb-6"
-      >
-        {carregandoGraficos ? (
-          <Carregando />
-        ) : chavesMes.length ? (
-          <ResponsiveContainer width="100%" height={pequena ? 240 : 320}>
-            <BarChart
-              data={dadosBarras}
-              margin={{ top: 8, right: 8, bottom: 4, left: 0 }}
-              barGap={2}
-              barCategoryGap="30%"
-            >
-              <CartesianGrid vertical={false} stroke="#E7E4DC" />
-              <XAxis
-                dataKey="categoria"
-                tickLine={false}
-                axisLine={false}
-                tick={{ fill: "#7A746B", fontSize: pequena ? 10 : 12 }}
-              />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                width={pequena ? 36 : 56}
-                tick={{ fill: "#7A746B", fontSize: pequena ? 10 : 12 }}
-              />
-              <Tooltip
-                formatter={(v: number) => `${num(v, 2)} t`}
-                contentStyle={{
-                  borderRadius: 12,
-                  border: "1px solid #E7E4DC",
-                  fontFamily: "Inter, sans-serif",
-                }}
-              />
-              <Legend wrapperStyle={{ fontSize: 12 }} />
-              {chavesMes.map((m, i) => (
-                <Bar
-                  key={m}
-                  dataKey={m}
-                  fill={CORES_SERIE[i % CORES_SERIE.length]}
-                  radius={[4, 4, 0, 0]}
-                />
-              ))}
-            </BarChart>
-          </ResponsiveContainer>
-        ) : (
-          <Vazio />
-        )}
-      </Cartao>
-
-
-      <Cartao
-        titulo="Distribuição numérica (DN) por mês"
-        acao={<SeletorBase base={base} onBase={setBase} />}
-        className="mb-6"
-      >
-        {carregandoGraficos ? (
-          <Carregando />
-        ) : dadosLinha.length ? (
-          <GraficoLinha
-            dados={dadosLinha}
-            cor={CORES_SERIE[0]}
-            segundaSerie={{ chave: "comparativo", nome: "DN YoPro", cor: CORES_SERIE[3] }}
-          />
-        ) : (
-          <Vazio />
-        )}
       </Cartao>
 
       {/* Seção C — Programa Master */}

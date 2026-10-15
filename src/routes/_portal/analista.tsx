@@ -8,7 +8,9 @@ import { Tabela, type Coluna } from "@/components/portal/Tabela";
 import { Topbar } from "@/components/portal/Topbar";
 import {
   useCompradorAlertas,
+  useCompradorPedidos,
   useCompradorSkus,
+  type CompradorPedido,
   type CompradorSku,
 } from "@/lib/analista";
 import { brl, ddmm, ddmmaaaa, num, rotuloProduto } from "@/lib/format";
@@ -27,9 +29,23 @@ export const Route = createFileRoute("/_portal/analista")({
   component: AnalistaPage,
 });
 
+type LinhaPedido = CompradorPedido & {
+  disp: number;
+  vel: number;
+  cobHoje: number | null;
+  cobComPedido: number | null;
+};
+
+/** "sex 16/10" a partir de uma data ISO (yyyy-mm-dd). */
+function diaEData(iso: string) {
+  const dia = new Date(`${iso}T12:00:00`).toLocaleDateString("pt-BR", { weekday: "short" });
+  return `${dia.replace(".", "")} ${ddmm(iso)}`;
+}
+
 function AnalistaPage() {
   const alertas = useCompradorAlertas();
   const skus = useCompradorSkus();
+  const pedidos = useCompradorPedidos();
   const termometro = useTermometro();
   const [soSugestao, setSoSugestao] = useState(true);
   const [escolhido, setEscolhido] = useState<number | null>(null);
@@ -52,6 +68,47 @@ function AnalistaPage() {
     [skus.data, codfornec],
   );
 
+  // Pedidos em trânsito agrupados por pedido, com a cobertura de cada SKU antes e depois da chegada.
+  const grupos = useMemo(() => {
+    const porSku = new Map(doFornecedor.map((s) => [s.codprod, s]));
+    const m = new Map<string, LinhaPedido[]>();
+    for (const p of pedidos.data ?? []) {
+      if (p.codfornec !== codfornec) continue;
+      const s = porSku.get(p.codprod);
+      const vel = Number(s?.velocidade ?? 0);
+      const disp = Number(s?.disponivel ?? 0);
+      const l: LinhaPedido = {
+        ...p,
+        disp,
+        vel,
+        cobHoje: vel > 0 ? disp / vel : null,
+        cobComPedido: vel > 0 ? (disp + Number(p.un_liquida)) / vel : null,
+      };
+      m.set(p.pedido, [...(m.get(p.pedido) ?? []), l]);
+    }
+    return [...m.entries()].map(([pedido, linhas]) => {
+      const p0 = linhas[0]!; // todo grupo nasce com pelo menos uma linha
+      const soma = (f: (l: LinhaPedido) => number) => linhas.reduce((t, l) => t + f(l), 0);
+      return {
+        pedido,
+        linhas: [...linhas].sort(
+          (a, b) =>
+            Number(b.caixas_cortadas > 0) - Number(a.caixas_cortadas > 0) ||
+            Number(b.vl_liquido ?? 0) - Number(a.vl_liquido ?? 0),
+        ),
+        dataPedido: p0.data_pedido,
+        janela: p0.janela,
+        prevista: p0.data_prevista,
+        fonte: p0.fonte,
+        cx: soma((l) => Number(l.caixas)),
+        cxCortadas: soma((l) => Number(l.caixas_cortadas)),
+        cxLiquidas: soma((l) => Number(l.caixas_liquidas)),
+        kg: soma((l) => Number(l.kg_liquido ?? 0)),
+        valor: soma((l) => Number(l.vl_liquido ?? 0)),
+      };
+    });
+  }, [pedidos.data, doFornecedor, codfornec]);
+
   const linhas = useMemo(() => {
     const base = soSugestao ? doFornecedor.filter((s) => Number(s.sugestao_cx ?? 0) > 0) : doFornecedor;
     return [...base].sort((a, b) => {
@@ -72,6 +129,47 @@ function AnalistaPage() {
     [doFornecedor],
   );
 
+  const colunasPedido: Coluna<LinhaPedido>[] = [
+    {
+      rotulo: "Produto",
+      titulo: true,
+      celula: (p) => <span className="font-semibold">{rotuloProduto(p.codprod, p.descricao)}</span>,
+    },
+    { rotulo: "Pedido (cx)", direita: true, celula: (p) => num(p.caixas) },
+    {
+      rotulo: "Corte (cx)",
+      direita: true,
+      dica: "Caixas que o fabricante não vai entregar",
+      celula: (p) =>
+        p.caixas_cortadas > 0 ? (
+          <span style={{ color: "var(--critical)", fontWeight: 700 }}>−{num(p.caixas_cortadas)}</span>
+        ) : (
+          "—"
+        ),
+    },
+    {
+      rotulo: "Chega (cx)",
+      direita: true,
+      dica: "Pedido menos corte",
+      celula: (p) => <strong>{num(p.caixas_liquidas)}</strong>,
+    },
+    { rotulo: "kg", direita: true, celula: (p) => num(p.kg_liquido) },
+    { rotulo: "R$ compra", direita: true, celula: (p) => brl(p.vl_liquido) },
+    { rotulo: "Estoque hoje", direita: true, celula: (p) => num(p.disp) },
+    {
+      rotulo: "Cobertura hoje",
+      direita: true,
+      dica: "Dias de venda que o estoque atual cobre, sem o pedido",
+      celula: (p) => (p.cobHoje == null ? "—" : `${num(p.cobHoje, 1)} d`),
+    },
+    {
+      rotulo: "Cobertura com o pedido",
+      direita: true,
+      dica: "Dias de venda cobertos pelo estoque atual mais o que chega",
+      celula: (p) => (p.cobComPedido == null ? "—" : `${num(p.cobComPedido, 1)} d`),
+    },
+  ];
+
   const colunas: Coluna<CompradorSku>[] = [
     {
       rotulo: "Produto",
@@ -90,6 +188,12 @@ function AnalistaPage() {
       direita: true,
       dica: "Pedido aberto além do que existe em estoque (corte marcado)",
       celula: (s) => num(s.descoberto),
+    },
+    {
+      rotulo: "Em pedido",
+      direita: true,
+      dica: "Unidades já pedidas ao fabricante e a caminho, descontado o corte",
+      celula: (s) => (Number(s.pendente ?? 0) > 0 ? num(s.pendente) : "—"),
     },
     {
       rotulo: "Vel./dia",
@@ -222,6 +326,45 @@ function AnalistaPage() {
             />
           </div>
 
+          {grupos.map((g) => (
+            <Cartao
+              key={g.pedido}
+              titulo={`Pedido em trânsito — ${ddmm(g.dataPedido)} · janela ${g.janela ?? "—"} · chega ${diaEData(g.prevista)}`}
+            >
+              <p className="mb-1 text-sm tabular">
+                <strong>{num(g.cxLiquidas)} caixas</strong> a caminho · {num(g.kg)} kg ·{" "}
+                <strong>{brl(g.valor)}</strong>
+                {g.cxCortadas > 0 ? (
+                  <span className="text-muted-foreground">
+                    {" "}
+                    · {num(g.cx)} pedidas, {num(g.cxCortadas)} cortadas pelo fabricante
+                  </span>
+                ) : null}
+              </p>
+              {g.cxCortadas > 0 ? (
+                <p className="mb-3 text-sm" style={{ color: "var(--critical)" }}>
+                  Cortados:{" "}
+                  {g.linhas
+                    .filter((l) => l.caixas_cortadas > 0)
+                    .map((l) => rotuloProduto(l.codprod, l.descricao))
+                    .join(" · ")}
+                  . Sem o pedido, esses itens podem faltar antes da próxima entrega.
+                </p>
+              ) : null}
+              <Tabela
+                colunas={colunasPedido}
+                linhas={g.linhas}
+                chave={(p) => `${p.pedido}-${p.codprod}`}
+                compacto
+              />
+              <p className="mt-3 text-xs text-muted-foreground">
+                O Winthor só registra o pedido de compra na entrada, então ele vem do pedido enviado
+                ao portal do fabricante{g.fonte ? ` (${g.fonte})` : ""}, já descontados os cortes
+                confirmados.
+              </p>
+            </Cartao>
+          ))}
+
           <Cartao
             titulo="Itens do pedido sugerido"
             acao={
@@ -239,6 +382,13 @@ function AnalistaPage() {
               {num(totais.itens)} itens · {num(totais.caixas)} caixas · {num(totais.kg)} kg ·{" "}
               <strong>{brl(totais.valor)}</strong>
             </p>
+            {alerta.viavel === false ? (
+              <p className="mb-3 text-sm" style={{ color: "var(--attention)" }}>
+                Janela inviável: a lista abaixo mostra a necessidade real de compra, não um pedido
+                que possa ser feito agora. O mínimo de {num(alerta.minimo_kg)} kg não fecha sem
+                estourar a validade.
+              </p>
+            ) : null}
             {linhas.length === 0 ? (
               <Vazio texto="Nenhum item com sugestão de compra." />
             ) : (

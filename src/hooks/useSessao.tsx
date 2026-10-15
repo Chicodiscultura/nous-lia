@@ -50,5 +50,18 @@ export function usePerfil(email: string | undefined) {
   });
 }
 
-export const podeVerMargem = (perfil?: Perfil | null) =>
+/** Perfil do usuário atual sem depender do e-mail (a sessão já valida a chamada). */
+export function usePerfilAtual() {
+  return useQuery({
+    queryKey: ["perfil-app", "atual"],
+    staleTime: 30 * 60 * 1000,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("meu_perfil_app");
+      if (error) return null;
+      return (data ?? null) as PerfilApp | null;
+    },
+  });
+}
+
+export const podeVerMargem =(perfil?: Perfil | null) =>
   perfil === "gestor" || perfil === "diretoria";
